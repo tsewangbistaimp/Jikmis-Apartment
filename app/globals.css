@@ -39,6 +39,7 @@ a {
 
 button,
 input,
+select,
 textarea {
   font: inherit;
 }
@@ -212,6 +213,7 @@ h3 {
 .venture-card,
 .timeline div,
 .contact-form,
+.order-form,
 .about-panel {
   background: var(--panel);
   border: 1px solid var(--line);
@@ -284,7 +286,8 @@ h3 {
 }
 
 .about-panel,
-.contact-form {
+.contact-form,
+.order-form {
   padding: 26px;
 }
 
@@ -419,9 +422,21 @@ h3 {
   transform: translateY(-2px);
 }
 
-.contact-form {
+.order-section {
+  display: grid;
+  gap: 32px;
+}
+
+.contact-form,
+.order-form {
   display: grid;
   gap: 16px;
+}
+
+.form-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 label {
@@ -433,6 +448,7 @@ label {
 }
 
 input,
+select,
 textarea {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--line);
@@ -443,14 +459,49 @@ textarea {
   width: 100%;
 }
 
+select {
+  appearance: none;
+}
+
+option {
+  background: var(--bg-2);
+  color: var(--text);
+}
+
 textarea {
   resize: vertical;
 }
 
 input:focus,
+select:focus,
 textarea:focus {
   border-color: rgba(34, 211, 238, 0.72);
   box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
+.form-status {
+  border-radius: var(--radius);
+  font-weight: 800;
+  margin: 0;
+  padding: 12px 14px;
+}
+
+.form-status.success {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #bbf7d0;
+}
+
+.form-status.error {
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: #fecaca;
 }
 
 footer {
@@ -556,6 +607,7 @@ footer a {
 
   .hero-stats,
   .highlight-grid,
+  .form-grid,
   .cards-grid,
   .venture-grid {
     grid-template-columns: 1fr;

@@ -17,6 +17,7 @@ import {
   MapPin,
   MessageCircle,
   Mountain,
+  PackageCheck,
   Rocket,
   Send,
   ShoppingBag,
@@ -24,9 +25,9 @@ import {
   Target,
   Zap
 } from "lucide-react";
-import { useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
-const navItems = ["About", "Expertise", "Ventures", "Experience", "Contact"];
+const navItems = ["About", "Expertise", "Ventures", "Experience", "Orders", "Contact"];
 
 const highlights = [
   { label: "Location", value: "Kathmandu, Nepal", icon: MapPin },
@@ -116,7 +117,12 @@ const socialLinks = [
   }
 ];
 
+type OrderStatus = "idle" | "sending" | "success" | "error";
+
 export default function Home() {
+  const [orderStatus, setOrderStatus] = useState<OrderStatus>("idle");
+  const [orderMessage, setOrderMessage] = useState("");
+
   useEffect(() => {
     const revealTargets = document.querySelectorAll("[data-reveal]");
     const observer = new IntersectionObserver(
@@ -134,6 +140,38 @@ export default function Home() {
     revealTargets.forEach((target) => observer.observe(target));
     return () => observer.disconnect();
   }, []);
+
+  async function handleOrderSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setOrderStatus("sending");
+    setOrderMessage("Submitting your order...");
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+      const result = (await response.json()) as { message?: string };
+
+      if (!response.ok) {
+        throw new Error(result.message || "Order could not be submitted.");
+      }
+
+      setOrderStatus("success");
+      setOrderMessage(result.message || "Order received. Confirmation email sent.");
+      form.reset();
+    } catch (error) {
+      setOrderStatus("error");
+      setOrderMessage(error instanceof Error ? error.message : "Order could not be submitted.");
+    }
+  }
 
   return (
     <main>
@@ -310,6 +348,72 @@ export default function Home() {
             <p>{languages.join(", ")} for cross-cultural work, sales, hospitality, and client communication.</p>
           </div>
         </div>
+      </section>
+
+      <section id="orders" className="section-shell order-section">
+        <div className="section-heading" data-reveal>
+          <p className="eyebrow">Orders</p>
+          <h2>Place a shoe, apple, or business inquiry order.</h2>
+          <p>
+            Every submitted order is saved to Google Sheets, sends me an email
+            notification, and sends the customer an order received confirmation.
+          </p>
+        </div>
+        <form className="order-form" onSubmit={handleOrderSubmit} data-reveal>
+          <div className="form-grid">
+            <label>
+              Customer Name
+              <input name="customerName" type="text" placeholder="Full name" required />
+            </label>
+            <label>
+              Customer Email
+              <input name="customerEmail" type="email" placeholder="customer@example.com" required />
+            </label>
+            <label>
+              Phone / WhatsApp
+              <input name="customerPhone" type="tel" placeholder="+977..." required />
+            </label>
+            <label>
+              Order Type
+              <select name="orderType" required defaultValue="">
+                <option value="" disabled>
+                  Select order type
+                </option>
+                <option value="Shoe Order">Shoe Order</option>
+                <option value="Mustang Apple Order">Mustang Apple Order</option>
+                <option value="B2B / Wholesale Inquiry">B2B / Wholesale Inquiry</option>
+                <option value="AI Marketing / Website Inquiry">AI Marketing / Website Inquiry</option>
+                <option value="Other Business Inquiry">Other Business Inquiry</option>
+              </select>
+            </label>
+            <label>
+              Product / Service
+              <input name="product" type="text" placeholder="Shoes, apples, website, ads..." required />
+            </label>
+            <label>
+              Quantity / Budget
+              <input name="quantity" type="text" placeholder="Example: 10 pairs or NPR 50,000" required />
+            </label>
+          </div>
+          <label>
+            Delivery Address / Notes
+            <textarea
+              name="notes"
+              placeholder="Delivery address, preferred size, product details, deadline, or special notes"
+              rows={5}
+              required
+            />
+          </label>
+          <button className="button primary" type="submit" disabled={orderStatus === "sending"}>
+            <PackageCheck size={18} />
+            {orderStatus === "sending" ? "Submitting..." : "Submit Order"}
+          </button>
+          {orderMessage ? (
+            <p className={`form-status ${orderStatus === "error" ? "error" : "success"}`} role="status">
+              {orderMessage}
+            </p>
+          ) : null}
+        </form>
       </section>
 
       <section id="contact" className="section-shell contact-section">
