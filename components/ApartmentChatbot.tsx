@@ -16,7 +16,7 @@ const starterMessages: ChatMessage[] = [
     id: "welcome",
     role: "bot",
     content:
-      "Hello! Welcome to Jikmis Apartment in Boudha. I can help with availability, pricing, bookings, and apartment questions. How can I help you today?"
+      "Hello! Welcome to Jikmis Apartment in Boudha. Namaste, hajur lai k sahayog chahiyo hola? I can help with availability, pricing, bookings, and apartment questions."
   }
 ];
 
