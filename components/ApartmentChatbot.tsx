@@ -20,7 +20,7 @@ const starterMessages: ChatMessage[] = [
   }
 ];
 
-const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const chatEndpoint = process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/chat` : "/api/chat";
 
 export default function ApartmentChatbot() {
   const [isOpen, setIsOpen] = useState(true);
@@ -59,7 +59,7 @@ export default function ApartmentChatbot() {
           content: message.content
         }));
 
-      const response = await fetch(`${apiBase}/chat`, {
+      const response = await fetch(chatEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: trimmed, messages: chatHistory })
