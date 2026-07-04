@@ -15,12 +15,18 @@ type OrderPayload = {
 };
 
 const requiredEnv = [
-  "GOOGLE_SERVICE_ACCOUNT_EMAIL",
-  "GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY",
-  "GOOGLE_SPREADSHEET_ID",
+  "GOOGLE_SHEET_ID",
+  "GOOGLE_SHEET_TAB_NAME",
+  "GOOGLE_CLIENT_EMAIL",
+  "GOOGLE_PRIVATE_KEY",
+  "SMTP_HOST",
+  "SMTP_PORT",
   "SMTP_USER",
-  "SMTP_APP_PASSWORD",
-  "ORDER_NOTIFICATION_EMAIL"
+  "SMTP_PASS",
+  "SMTP_USER",
+  "ORDER_NOTIFICATION_EMAIL",
+  "CUSTOMER_EMAIL_FROM",
+  "CUSTOMER_REPLY_TO"
 ] as const;
 
 function cleanValue(value: unknown) {
@@ -32,24 +38,29 @@ function getMissingEnv() {
 }
 
 function formatPrivateKey(privateKey: string) {
-  return privateKey.replace(/\\n/g, "\n");
+  return privateKey.replace(/^"|"$/g, "").replace(/\\n/g, "\n");
+}
+
+function sheetRange(tabName: string, range: string) {
+  return `'${tabName.replace(/'/g, "''")}'!${range}`;
 }
 
 async function appendOrderToSheet(order: Required<OrderPayload>, orderId: string) {
   const auth = new google.auth.JWT({
-    email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    key: formatPrivateKey(process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || ""),
+    email: process.env.GOOGLE_CLIENT_EMAIL,
+    key: formatPrivateKey(process.env.GOOGLE_PRIVATE_KEY || ""),
     scopes: ["https://www.googleapis.com/auth/spreadsheets"]
   });
 
   const sheets = google.sheets({ version: "v4", auth });
-  const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID;
+  const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+  const tabName = process.env.GOOGLE_SHEET_TAB_NAME || "Sheet1";
   const spreadsheet = await sheets.spreadsheets.get({ spreadsheetId });
-  const hasOrdersSheet = spreadsheet.data.sheets?.some(
-    (sheet) => sheet.properties?.title === "Orders"
+  const hasSheet = spreadsheet.data.sheets?.some(
+    (sheet) => sheet.properties?.title === tabName
   );
 
-  if (!hasOrdersSheet) {
+  if (!hasSheet) {
     await sheets.spreadsheets.batchUpdate({
       spreadsheetId,
       requestBody: {
@@ -57,7 +68,7 @@ async function appendOrderToSheet(order: Required<OrderPayload>, orderId: string
           {
             addSheet: {
               properties: {
-                title: "Orders"
+                title: tabName
               }
             }
           }
@@ -68,13 +79,13 @@ async function appendOrderToSheet(order: Required<OrderPayload>, orderId: string
 
   const headerResponse = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: "Orders!A1:J1"
+    range: sheetRange(tabName, "A1:J1")
   });
 
   if (!headerResponse.data.values?.length) {
     await sheets.spreadsheets.values.update({
       spreadsheetId,
-      range: "Orders!A1:J1",
+      range: sheetRange(tabName, "A1:J1"),
       valueInputOption: "USER_ENTERED",
       requestBody: {
         values: [
@@ -112,7 +123,7 @@ async function appendOrderToSheet(order: Required<OrderPayload>, orderId: string
 
   await sheets.spreadsheets.values.append({
     spreadsheetId,
-    range: "Orders!A:J",
+    range: sheetRange(tabName, "A:J"),
     valueInputOption: "USER_ENTERED",
     insertDataOption: "INSERT_ROWS",
     requestBody: { values }
@@ -121,10 +132,12 @@ async function appendOrderToSheet(order: Required<OrderPayload>, orderId: string
 
 async function sendOrderEmails(order: Required<OrderPayload>, orderId: string) {
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: process.env.SMTP_SECURE === "true",
     auth: {
       user: process.env.SMTP_USER,
-      pass: process.env.SMTP_APP_PASSWORD?.replace(/\s/g, "")
+      pass: process.env.SMTP_PASS?.replace(/\s/g, "")
     }
   });
 
@@ -140,15 +153,17 @@ Notes: ${order.notes}
 `;
 
   await transporter.sendMail({
-    from: `"TsewangBistaX Orders" <${process.env.SMTP_USER}>`,
+    from: process.env.CUSTOMER_EMAIL_FROM,
     to: process.env.ORDER_NOTIFICATION_EMAIL,
+    replyTo: order.customerEmail,
     subject: `New order received: ${order.orderType} (${orderId})`,
     text: `A new order was submitted from the portfolio website.\n\n${orderLines}`
   });
 
   await transporter.sendMail({
-    from: `"TsewangBistaX" <${process.env.SMTP_USER}>`,
+    from: process.env.CUSTOMER_EMAIL_FROM,
     to: order.customerEmail,
+    replyTo: process.env.CUSTOMER_REPLY_TO,
     subject: `Order received - ${orderId}`,
     text: `Hi ${order.customerName},\n\nThank you. Your order has been received and Tsewang Bista will contact you soon.\n\n${orderLines}\n\nTsewangBistaX\nTechnology, Business & Innovation`
   });
