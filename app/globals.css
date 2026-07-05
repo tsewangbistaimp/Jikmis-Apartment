@@ -259,6 +259,81 @@ textarea { resize: vertical; }
   right: 22px;
   z-index: 50;
 }
+.chat-helper-note {
+  animation: helperNoteEnter 560ms ease both, helperNoteFloat 8.5s ease-in-out 1.6s infinite;
+  background: #ffffff;
+  border: 1px solid #dfe9de;
+  border-left: 4px solid #2f6f4e;
+  border-radius: 14px;
+  box-shadow: 0 18px 42px rgba(31, 41, 55, 0.16);
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+  line-height: 1.35;
+  max-width: min(320px, calc(100vw - 32px));
+  min-height: 0;
+  padding: 13px 38px 13px 14px;
+  position: relative;
+  text-align: left;
+  transition: box-shadow 180ms ease, transform 180ms ease;
+  width: auto;
+}
+.chat-helper-note::after {
+  background: #ffffff;
+  border-bottom: 1px solid #dfe9de;
+  border-right: 1px solid #dfe9de;
+  bottom: -7px;
+  content: "";
+  height: 14px;
+  position: absolute;
+  right: 28px;
+  transform: rotate(45deg);
+  width: 14px;
+}
+.chat-helper-note:hover,
+.chat-helper-note:focus-visible {
+  box-shadow: 0 22px 54px rgba(31, 41, 55, 0.2);
+  transform: translateY(-2px) scale(1.01);
+}
+.chat-helper-note:focus-visible {
+  outline: 3px solid rgba(47, 111, 78, 0.24);
+  outline-offset: 3px;
+}
+.chat-helper-note span:first-child {
+  font-size: 0.94rem;
+  font-weight: 850;
+  padding-right: 2px;
+}
+.chat-helper-close {
+  align-items: center;
+  background: #f3f7f2;
+  border: 1px solid #d7e6d5;
+  border-radius: 999px;
+  color: #214b35;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 1rem;
+  font-weight: 900;
+  height: 24px;
+  justify-content: center;
+  line-height: 1;
+  position: absolute;
+  right: 9px;
+  top: 9px;
+  transition: background 160ms ease, transform 160ms ease;
+  width: 24px;
+  z-index: 1;
+}
+.chat-helper-close:hover,
+.chat-helper-close:focus-visible {
+  background: #e6f0e4;
+  transform: scale(1.06);
+}
+.chat-helper-close:focus-visible {
+  outline: 2px solid rgba(47, 111, 78, 0.32);
+  outline-offset: 2px;
+}
 .chatbot-launcher {
   align-items: center;
   background: var(--accent);
@@ -345,6 +420,30 @@ textarea { resize: vertical; }
 .typing-indicator span:nth-child(2) { animation-delay: 120ms; }
 .typing-indicator span:nth-child(3) { animation-delay: 240ms; }
 @keyframes bounce { 50% { opacity: 0.35; transform: translateY(-3px); } }
+@keyframes helperNoteEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes helperNoteFloat {
+  0%, 82%, 100% {
+    transform: translateY(0);
+  }
+  86% {
+    transform: translateY(-5px);
+  }
+  90% {
+    transform: translateY(0);
+  }
+  94% {
+    transform: translateY(-3px);
+  }
+}
 .quick-replies, .chat-actions {
   border-top: 1px solid var(--line);
   display: flex;
@@ -915,6 +1014,13 @@ textarea { resize: vertical; }
     left: 10px;
     right: 10px;
   }
+  .chat-helper-note {
+    max-width: min(100%, 340px);
+    padding: 12px 38px 12px 13px;
+  }
+  .chat-helper-note span:first-child {
+    font-size: 0.88rem;
+  }
   .chatbot-panel {
     border-radius: 12px;
     max-height: min(74vh, calc(100dvh - 92px));
@@ -1005,4 +1111,23 @@ textarea { resize: vertical; }
   }
   .map-button { bottom: 12px; left: 12px; right: 12px; }
   .map-card iframe { height: 420px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-helper-note,
+  .typing-indicator span,
+  .luxury-hero-content,
+  .hero-booking-card,
+  .luxury-room-card {
+    animation: none;
+  }
+  .chat-helper-note,
+  .chatbot-launcher,
+  .button,
+  .luxury-room-card,
+  .premium-card,
+  .nearby-card,
+  .review-card {
+    transition: none;
+  }
 }

@@ -21,9 +21,11 @@ const starterMessages: ChatMessage[] = [
 ];
 
 const chatEndpoint = process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/chat` : "/api/chat";
+const helperNoteStorageKey = "jikmis-chat-helper-note-dismissed";
 
 export default function ApartmentChatbot() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isHelperNoteHidden, setIsHelperNoteHidden] = useState(true);
   const [messages, setMessages] = useState<ChatMessage[]>(starterMessages);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -32,8 +34,26 @@ export default function ApartmentChatbot() {
   const messageIdRef = useRef(0);
 
   useEffect(() => {
+    const frameId = window.requestAnimationFrame(() => {
+      setIsHelperNoteHidden(sessionStorage.getItem(helperNoteStorageKey) === "true");
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, []);
+
+  useEffect(() => {
     historyRef.current?.scrollTo({ top: historyRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, isTyping]);
+
+  function openChat() {
+    setIsOpen(true);
+    window.setTimeout(() => inputRef.current?.focus(), 0);
+  }
+
+  function dismissHelperNote() {
+    sessionStorage.setItem(helperNoteStorageKey, "true");
+    setIsHelperNoteHidden(true);
+  }
 
   async function sendMessage(text: string) {
     const trimmed = text.trim();
@@ -102,6 +122,34 @@ export default function ApartmentChatbot() {
 
   return (
     <div className="chatbot-shell">
+      {!isOpen && !isHelperNoteHidden && (
+        <div
+          className="chat-helper-note"
+          role="button"
+          tabIndex={0}
+          onClick={openChat}
+          onKeyDown={(event) => {
+            if (event.key !== "Enter" && event.key !== " ") return;
+            event.preventDefault();
+            openChat();
+          }}
+          aria-label="Open Jikmis Apartment chat"
+        >
+          <span>💬 Have a question? Ask me about our apartment!</span>
+          <button
+            className="chat-helper-close"
+            type="button"
+            aria-label="Hide chat helper note"
+            onClick={(event) => {
+              event.stopPropagation();
+              dismissHelperNote();
+            }}
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {isOpen && (
         <section className="chatbot-panel" aria-label="Jikmis Apartment chat">
           <header className="chatbot-header">
@@ -167,10 +215,7 @@ export default function ApartmentChatbot() {
       <button
         className="chatbot-launcher"
         type="button"
-        onClick={() => {
-          setIsOpen(true);
-          window.setTimeout(() => inputRef.current?.focus(), 0);
-        }}
+        onClick={openChat}
       >
         <Bot size={22} />
         <span>Ask JK</span>
