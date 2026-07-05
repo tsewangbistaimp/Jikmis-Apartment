@@ -23,7 +23,7 @@ const starterMessages: ChatMessage[] = [
 const chatEndpoint = process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/chat` : "/api/chat";
 
 export default function ApartmentChatbot() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>(starterMessages);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -103,10 +103,10 @@ export default function ApartmentChatbot() {
   return (
     <div className="chatbot-shell">
       {isOpen && (
-        <section className="chatbot-panel" aria-label="Jikmis Apartment AI receptionist">
+        <section className="chatbot-panel" aria-label="Jikmis Apartment chat">
           <header className="chatbot-header">
             <div>
-              <span className="chatbot-kicker">AI receptionist</span>
+              <span className="chatbot-kicker">Ask JK</span>
               <strong>Jikmis Apartment</strong>
             </div>
             <button className="icon-button" type="button" onClick={() => setIsOpen(false)} aria-label="Close chat">

@@ -22,6 +22,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+html, body { max-width: 100%; overflow-x: hidden; }
 body {
   margin: 0;
   background:
@@ -114,6 +115,7 @@ h3 { font-size: 1.15rem; margin-bottom: 8px; }
   min-height: 44px;
   padding: 11px 16px;
   font-weight: 850;
+  text-align: center;
 }
 .primary { background: linear-gradient(135deg, var(--brown), #a9794e); color: white; box-shadow: 0 12px 28px rgba(117, 72, 44, 0.18); }
 .primary:hover { background: linear-gradient(135deg, var(--brown-dark), var(--brown)); transform: translateY(-2px); }
@@ -319,6 +321,7 @@ textarea { resize: vertical; }
   max-width: 86%;
   padding: 10px 12px;
   white-space: pre-wrap;
+  word-break: break-word;
 }
 .chat-message.bot { align-self: flex-start; background: white; border: 1px solid var(--line); color: var(--ink); }
 .chat-message.user { align-self: flex-end; background: var(--primary); color: white; }
@@ -877,30 +880,129 @@ textarea { resize: vertical; }
   .luxury-about, .nearby-section { grid-template-columns: 1fr; }
   .luxury-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero-booking-card { position: relative; bottom: auto; margin-top: 26px; right: auto; width: min(100%, 320px); }
+  .luxury-nav {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .luxury-nav nav {
+    overflow-x: auto;
+    padding-bottom: 2px;
+    width: 100%;
+  }
+  .luxury-nav nav a {
+    flex: 0 0 auto;
+  }
 }
 @media (max-width: 640px) {
   .site-header { align-items: flex-start; flex-direction: column; }
   .hero { min-height: auto; padding-top: 30px; }
   .room-grid, .stat-grid, .row, .facility-grid, .pricing-location-grid, .about-section, .about-stats { grid-template-columns: 1fr; }
   h1 { font-size: 2.5rem; }
+  h2 { font-size: clamp(1.85rem, 10vw, 2.45rem); }
   .hero-note { bottom: 10px; left: 10px; max-width: calc(100% - 20px); }
   .price-row { align-items: flex-start; flex-direction: column; }
   .price-row strong { text-align: left; }
-  .chatbot-shell { bottom: 14px; right: 14px; }
-  .chatbot-panel { max-height: min(520px, calc(100vh - 92px)); width: min(360px, calc(100vw - 28px)); }
+  .button {
+    min-height: 48px;
+    width: 100%;
+  }
+  .hero-actions,
+  .contact-actions {
+    width: 100%;
+  }
+  .chatbot-shell {
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    left: 10px;
+    right: 10px;
+  }
+  .chatbot-panel {
+    border-radius: 12px;
+    max-height: min(74vh, calc(100dvh - 92px));
+    width: 100%;
+  }
+  .chatbot-header {
+    padding: 12px;
+  }
+  .chatbot-history {
+    min-height: 150px;
+    padding: 12px;
+  }
+  .chat-message {
+    font-size: 0.94rem;
+    max-width: 92%;
+  }
+  .quick-replies,
+  .chat-actions {
+    gap: 6px;
+    padding: 8px;
+  }
+  .quick-replies {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .quick-replies button {
+    flex: 0 0 auto;
+    min-height: 38px;
+  }
+  .chat-actions a {
+    min-height: 42px;
+  }
+  .chat-input-row {
+    padding: 8px;
+  }
+  .chat-input-row input {
+    font-size: 16px;
+    min-height: 46px;
+  }
+  .chatbot-launcher {
+    justify-self: end;
+    min-height: 48px;
+    padding-inline: 15px;
+  }
   .site-footer { padding-bottom: 96px; }
-  .luxury-nav { gap: 12px; padding: 12px 16px; }
-  .luxury-nav nav { gap: 11px; font-size: 0.82rem; }
-  .luxury-hero { min-height: 92vh; padding: 126px 18px 44px; }
-  .luxury-hero-content h1 { font-size: clamp(2.7rem, 13vw, 4rem); }
-  .luxury-hero-content p:not(.eyebrow) { font-size: 0.98rem; }
-  .section-shell { padding-block: 46px; }
+  .luxury-nav { gap: 10px; padding: 10px 14px; }
+  .luxury-nav .brand { font-size: 0.95rem; }
+  .luxury-nav .brand-mark {
+    height: 32px;
+    width: 32px;
+  }
+  .luxury-nav nav {
+    gap: 10px;
+    font-size: 0.82rem;
+    scrollbar-width: none;
+  }
+  .luxury-nav nav::-webkit-scrollbar,
+  .quick-replies::-webkit-scrollbar {
+    display: none;
+  }
+  .luxury-hero { min-height: auto; padding: 128px 16px 34px; }
+  .luxury-hero-content h1 { font-size: clamp(2.2rem, 12vw, 3.35rem); line-height: 1.02; }
+  .luxury-hero-content p:not(.eyebrow) { font-size: 0.95rem; line-height: 1.62; }
+  .hero-booking-card {
+    margin-top: 22px;
+    max-width: none;
+    padding: 16px;
+    width: 100%;
+  }
+  .hero-booking-card strong {
+    font-size: 1.85rem;
+  }
+  .section-shell { padding: 40px 16px; }
+  .luxury-about { padding-top: 48px; }
   .nearby-grid, .luxury-gallery { grid-template-columns: 1fr; }
   .luxury-gallery img:nth-child(1), .luxury-gallery img:nth-child(6) { grid-column: span 1; aspect-ratio: 1 / 1; }
   .room-title-row, .room-price-row { align-items: flex-start; flex-direction: column; }
   .room-price-row span { text-align: left; }
-  .chatbot-history { min-height: 190px; }
-  .chatbot-launcher { min-height: 46px; padding-inline: 14px; }
+  .luxury-room-card,
+  .nearby-card,
+  .review-card {
+    box-shadow: 0 12px 34px rgba(82, 55, 35, 0.08);
+  }
+  .luxury-room-body,
+  .nearby-card,
+  .review-card {
+    padding: 16px;
+  }
   .map-button { bottom: 12px; left: 12px; right: 12px; }
   .map-card iframe { height: 420px; }
 }
