@@ -148,7 +148,7 @@ export default function Home() {
           <p className="eyebrow"><MapPin size={16} /> Boudha, Kathmandu</p>
           <h1>Jikmis Apartment near Boudhanath.</h1>
           <p>
-            Boutique studios and family apartments with warm interiors, private kitchens, hot water, and direct booking
+            Serviced studios and family apartments with warm interiors, private kitchens, hot water, and direct booking
             assistance in the heart of Boudha.
           </p>
           <div className="hero-actions">
@@ -170,7 +170,7 @@ export default function Home() {
       <section className="section-shell luxury-about" id="about">
         <div>
           <p className="eyebrow">About Jikmis</p>
-          <h2>A quiet boutique stay designed for comfort in Boudha.</h2>
+          <h2>A quiet serviced apartment designed for comfort in Boudha.</h2>
         </div>
         <div className="about-copy">
           <p>
@@ -332,7 +332,7 @@ export default function Home() {
 
       <footer className="site-footer luxury-footer">
         <span><Building2 size={16} /> Jikmis Apartment</span>
-        <span><Users size={16} /> Boutique serviced apartments in Boudha</span>
+        <span><Users size={16} /> Serviced apartments in Boudha</span>
       </footer>
 
       <ApartmentChatbot />

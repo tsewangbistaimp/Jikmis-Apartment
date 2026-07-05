@@ -785,15 +785,34 @@ textarea { resize: vertical; }
 
 .luxury-contact {
   background:
-    linear-gradient(135deg, rgba(36, 48, 64, 0.94), rgba(91, 61, 39, 0.9)),
-    var(--ink);
+    linear-gradient(135deg, rgba(255, 253, 248, 0.98), rgba(248, 239, 226, 0.96)),
+    #fffdf8;
+  border-block: 1px solid var(--line);
+  color: var(--ink);
   margin-top: 54px;
 }
 
+.luxury-contact .eyebrow {
+  color: var(--brown);
+}
+
+.luxury-contact h2 {
+  color: var(--ink);
+}
+
+.luxury-contact p {
+  color: #4f463f;
+}
+
+.luxury-contact .button.primary {
+  box-shadow: 0 16px 34px rgba(117, 72, 44, 0.22);
+}
+
 .luxury-contact .button.secondary {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.22);
-  color: white;
+  background: #ffffff;
+  border-color: #d9c6ad;
+  color: var(--ink);
+  box-shadow: 0 12px 30px rgba(82, 55, 35, 0.08);
 }
 
 .map-section {
@@ -823,9 +842,19 @@ textarea { resize: vertical; }
 }
 
 .luxury-footer {
-  background: #1b2532;
-  color: rgba(255, 255, 255, 0.72);
+  background:
+    linear-gradient(135deg, #253142, #1b2532 58%, #2f241d);
+  border-top: 1px solid rgba(201, 164, 90, 0.28);
+  color: rgba(255, 250, 242, 0.92);
   padding-bottom: 120px;
+}
+
+.luxury-footer span {
+  color: rgba(255, 250, 242, 0.94);
+}
+
+.luxury-footer svg {
+  color: var(--accent);
 }
 
 @keyframes fadeUp {

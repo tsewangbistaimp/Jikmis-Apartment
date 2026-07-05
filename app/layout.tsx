@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     template: "%s | Jikmis Apartment"
   },
   description:
-    "Luxury boutique serviced apartments in Boudha, Kathmandu with studio rooms, family rooms, direct booking, and AI receptionist support."
+    "Luxury serviced apartments in Boudha, Kathmandu with studio rooms, family rooms, direct booking, and AI receptionist support."
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
