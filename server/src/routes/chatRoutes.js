@@ -9,14 +9,14 @@ General information:
 * Apartment types: Studio Single, Studio Double, and 2 BHK Apartment
 * Apartments are comfortable and fully furnished
 * Amenities: free WiFi, 24/7 hot water, basic kitchen setup, cleaning service twice a week
-* Laundry: available on request, NPR 200 per load, up to 8-9 kg per load
+* Laundry: self-service washing machine available for guests, NPR 200 per load, approximately 8-9 kg per load. Staff can assist if needed.
 * Suitable for: solo guests, couples, families, groups, students, and long-stay guests
 * Contact: WhatsApp +9779708538395, Call +9779708538395, Email jikmisdonkhang@gmail.com
 
-Pricing:
-* Studio Single: NPR 1,500 per day, NPR 37,000 per month
-* Studio Double: NPR 2,500 per day, NPR 47,000 per month
-* 2 BHK Apartment: NPR 4,000 per day, NPR 65,000 per month
+Room pricing:
+* Single Studio Room: NPR 1,500 per night, NPR 37,000 per month
+* Double Studio Room: NPR 2,500 per night, NPR 47,000 per month
+* 2BHK Family Room: NPR 4,000 per night, NPR 65,000 per month
 
 Current availability:
 * 2BHK Family Room: Available now
@@ -41,6 +41,9 @@ Receptionist rules:
 * Keep replies short, warm, professional, and conversational.
 * Answer only what the guest asks.
 * Do not include extra information unless the guest specifically requests it.
+* If asked only about price, answer only with the price.
+* If asked only about laundry, answer only the laundry question.
+* If asked about both price and availability, answer both naturally.
 * Mention exact prices by apartment type when asked about price.
 * If asked about availability, use only the current availability above. Never invent different dates.
 * If asked to book or view, ask only for the missing details needed next, such as dates, apartment type, or number of guests.
@@ -56,28 +59,24 @@ const BOOKING_DETAILS_PROMPT =
 function localReceptionistReply(message) {
   const text = message.toLowerCase();
 
-  if (matchesAny(text, ["available", "availability", "book", "booking", "reserve", "vacant", "free", "room"])) {
-    if (matchesAny(text, ["family", "2bhk", "2 bhk"])) {
-      return "Yes! Our 2BHK Family Room is available right now.";
-    }
+  if (isPriceQuestion(text) && isAvailabilityQuestion(message)) {
+    return `${priceReply(text)} ${availabilityReply(text, true)}`;
+  }
 
-    if (matchesAny(text, ["double"])) {
-      return "The Double Studio Room will be available from 12 July.";
-    }
-
-    if (matchesAny(text, ["single"])) {
-      return "Our Single Studio Room will be available from 7 August.";
-    }
-
-    return "Right now our 2BHK Family Room is available. The Double Studio Room will be available from 12 July, and the Single Studio Room will be available from 7 August.";
+  if (isAvailabilityQuestion(message)) {
+    return availabilityReply(text);
   }
 
   if (isGreeting(text)) {
     return "Hello! Welcome to Jikmis Apartment in Boudha. I can help with availability, pricing, bookings, facilities, and location. How can I help you today?";
   }
 
-  if (matchesAny(text, ["price", "cost", "rate", "monthly", "month", "night", "daily", "rent", "charge", "payment"])) {
-    return `Studio Single is NPR 1,500/day or NPR 37,000/month. Studio Double is NPR 2,500/day or NPR 47,000/month. 2 BHK is NPR 4,000/day or NPR 65,000/month. ${BOOKING_DETAILS_PROMPT}`;
+  if (isLaundryQuestion(text)) {
+    return laundryReply(text);
+  }
+
+  if (isPriceQuestion(text)) {
+    return priceReply(text);
   }
 
   if (matchesAny(text, ["studio", "single", "double", "2 bhk", "2bhk", "family", "group", "apartment type"])) {
@@ -86,10 +85,6 @@ function localReceptionistReply(message) {
 
   if (matchesAny(text, ["facility", "facilities", "amenity", "amenities", "wifi", "hot water", "kitchen", "parking", "clean", "bathroom", "balcony", "furnished", "cook"])) {
     return `Amenities include free WiFi, 24/7 hot water, basic kitchen setup, fully furnished apartments, and cleaning twice a week. The location is near Boudhanath, shops, restaurants, and public transportation. ${CONTACT_LINE}`;
-  }
-
-  if (matchesAny(text, ["laundry", "wash", "washing", "clothes"])) {
-    return `Laundry service is available on request. It costs NPR 200 per load, up to 8-9 kg per load. ${CONTACT_LINE}`;
   }
 
   if (matchesAny(text, ["location", "where", "address", "boudha", "stupa", "near", "view"])) {
@@ -118,6 +113,75 @@ function localReceptionistReply(message) {
 function isAvailabilityQuestion(message) {
   const text = message.toLowerCase();
   return matchesAny(text, ["available", "availability", "vacant", "free"]) || text.includes("which rooms");
+}
+
+function isPriceQuestion(text) {
+  return matchesAny(text, ["price", "cost", "rate", "monthly", "month", "night", "daily", "rent", "charge", "payment", "how much"]);
+}
+
+function isLaundryQuestion(text) {
+  return matchesAny(text, ["laundry", "wash", "washing", "clothes", "machine"]);
+}
+
+function availabilityReply(text, compact = false) {
+  if (matchesAny(text, ["family", "2bhk", "2 bhk"])) {
+    return compact ? "It is available right now." : "Yes! Our 2BHK Family Room is available right now.";
+  }
+
+  if (matchesAny(text, ["double"])) {
+    return compact ? "It will be available from 12 July." : "The Double Studio Room will be available from 12 July.";
+  }
+
+  if (matchesAny(text, ["single"])) {
+    return compact ? "It will be available from 7 August." : "Our Single Studio Room will be available from 7 August.";
+  }
+
+  return "Right now our 2BHK Family Room is available. The Double Studio Room will be available from 12 July, and the Single Studio Room will be available from 7 August.";
+}
+
+function priceReply(text) {
+  if (matchesAny(text, ["family", "2bhk", "2 bhk"])) {
+    return "Our 2BHK Family Room is NPR 4,000 per night or NPR 65,000 per month.";
+  }
+
+  if (matchesAny(text, ["double"])) {
+    return "The Double Studio Room is NPR 2,500 per night or NPR 47,000 per month.";
+  }
+
+  if (matchesAny(text, ["single"])) {
+    return "The Single Studio Room is NPR 1,500 per night or NPR 37,000 per month.";
+  }
+
+  if (matchesAny(text, ["monthly", "month"])) {
+    return "Yes, we do:\n\n* Single Studio Room: NPR 37,000 per month\n* Double Studio Room: NPR 47,000 per month\n* 2BHK Family Room: NPR 65,000 per month.";
+  }
+
+  return "Single Studio Room is NPR 1,500 per night, Double Studio Room is NPR 2,500 per night, and 2BHK Family Room is NPR 4,000 per night.";
+}
+
+function laundryReply(text) {
+  if (matchesAny(text, ["included", "include"])) {
+    return "No, laundry is charged separately at NPR 200 per load.";
+  }
+
+  if (matchesAny(text, ["kg", "kilo", "once", "load", "hold"])) {
+    return "Each load can hold approximately 8-9 kg.";
+  }
+
+  if (matchesAny(text, ["how much", "cost", "price", "charge"])) {
+    return "It's NPR 200 per load.";
+  }
+
+  if (matchesAny(text, ["clothes", "wash"])) {
+    return "Yes! You can use our self-service washing machine. It's NPR 200 per load, and each load can hold about 8-9 kg.";
+  }
+
+  return "Yes, we have a self-service washing machine available for our guests.";
+}
+
+function isSourceOfTruthQuestion(message) {
+  const text = message.toLowerCase();
+  return isAvailabilityQuestion(message) || isPriceQuestion(text) || isLaundryQuestion(text);
 }
 
 function matchesAny(text, words) {
@@ -157,10 +221,10 @@ router.post("/", async (req, res, next) => {
       return res.status(400).json({ message: "Message is required." });
     }
 
-    if (isAvailabilityQuestion(message)) {
+    if (isSourceOfTruthQuestion(message)) {
       return res.json({
         reply: localReceptionistReply(message),
-        source: "availability_source_of_truth"
+        source: "jikmis_source_of_truth"
       });
     }
 
