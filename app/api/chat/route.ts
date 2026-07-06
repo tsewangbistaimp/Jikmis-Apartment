@@ -3,6 +3,17 @@ import { NextResponse } from "next/server";
 const SYSTEM_PROMPT = `You are the official chat helper for Jikmis Apartment in Boudha, Kathmandu.
 Only answer using the provided apartment information below.
 
+Core behavior:
+* Understand the guest's intent first. Do not rely on exact question matching.
+* Guests may use different words, short phrases, indirect questions, or spelling mistakes. Interpret the meaning and answer from the Jikmis Apartment information.
+* If a guest asks multiple things in one message, answer all relevant parts clearly.
+* Combine information when helpful. For example, if they ask price and room facilities together, answer both together.
+* Do not copy this knowledge base word for word. Rewrite naturally like a friendly family-run apartment receptionist.
+* If you are not completely sure, do not guess. Say you do not have confirmed information and share WhatsApp, phone, and email.
+* Never guarantee availability, discounts, airport pickup, early check-in, or late check-out. Explain that these depend on confirmation or availability.
+* Stay focused only on Jikmis Apartment rooms, prices, booking, facilities, rules, location, payments, availability, and guest stays.
+* Be proactive but not overwhelming: mention only useful extra details related to the guest's question.
+
 General information:
 * Area: Boudha, Kathmandu, Nepal
 * Walking time to Boudhanath Stupa: approximately 5-10 minutes
@@ -99,7 +110,7 @@ function isGreeting(text: string) {
 }
 
 function isPriceQuestion(text: string) {
-  return matchesAny(text, ["price", "cost", "rate", "monthly", "month", "night", "daily", "rent", "charge", "payment", "how much"]);
+  return matchesAny(text, ["price", "cost", "rate", "rates", "expensive", "cheap", "monthly", "montly", "month", "night", "nightly", "daily", "rent", "charge", "payment", "how much", "per night", "per month"]);
 }
 
 function isLaundryQuestion(text: string) {
@@ -107,7 +118,7 @@ function isLaundryQuestion(text: string) {
 }
 
 function isRoomDetailsQuestion(text: string) {
-  return matchesAny(text, ["room type", "room types", "inside", "include", "included", "bed", "beds", "guest", "guests", "capacity", "how many people", "sofa", "fridge", "utensil", "dining"]);
+  return matchesAny(text, ["room type", "room types", "inside", "include", "included", "have", "has", "bed", "beds", "guest", "guests", "capacity", "how many people", "how many guest", "people can stay", "sofa", "fridge", "refrigerator", "utensil", "utensils", "dining"]);
 }
 
 function isRulesQuestion(text: string) {
@@ -115,11 +126,11 @@ function isRulesQuestion(text: string) {
 }
 
 function isBookingQuestion(text: string) {
-  return matchesAny(text, ["book", "booking", "reserve", "reservation", "viewing", "inspection", "payment", "pay", "advance", "esewa", "khalti", "bank", "cash", "summary"]);
+  return matchesAny(text, ["book", "booking", "reserve", "reservation", "hold room", "confirm room", "viewing", "inspection", "visit room", "payment", "pay", "advance", "esewa", "khalti", "bank", "cash", "summary"]);
 }
 
 function isDiscountQuestion(text: string) {
-  return matchesAny(text, ["discount", "negotiate", "negotiation", "deal", "less", "cheaper", "lower"]);
+  return matchesAny(text, ["discount", "negotiate", "negotiation", "nego", "deal", "less", "cheaper", "lower", "reduce", "reduced", "offer"]);
 }
 
 function isContactQuestion(text: string) {
@@ -127,11 +138,11 @@ function isContactQuestion(text: string) {
 }
 
 function isFacilitiesQuestion(text: string) {
-  return matchesAny(text, ["facility", "facilities", "amenity", "amenities", "wifi", "hot water", "kitchen", "clean", "cleaning", "parking", "bike", "cctv", "rooftop", "view"]);
+  return matchesAny(text, ["facility", "facilities", "amenity", "amenities", "wifi", "internet", "hot water", "kitchen", "clean", "cleaning", "housekeeping", "parking", "bike", "motorbike", "cctv", "security camera", "rooftop", "view"]);
 }
 
 function isLocationQuestion(text: string) {
-  return matchesAny(text, ["location", "where", "address", "boudha", "boudhanath", "stupa", "near", "map", "airport", "restaurant", "shop", "bank", "atm"]);
+  return matchesAny(text, ["location", "where", "address", "boudha", "boudhanath", "stupa", "near", "nearby", "far", "distance", "map", "airport", "restaurant", "cafe", "shop", "bank", "atm"]);
 }
 
 function unknownReply() {
@@ -255,6 +266,14 @@ function localReceptionistReply(message: string) {
 
   if (isPriceQuestion(text) && isAvailabilityQuestion(message)) {
     return `${priceReply(text)} ${availabilityReply(text, true)}`;
+  }
+
+  if (isPriceQuestion(text) && isRoomDetailsQuestion(text)) {
+    return `${priceReply(text)} ${roomDetailsReply(text)}`;
+  }
+
+  if (isLocationQuestion(text) && isFacilitiesQuestion(text)) {
+    return `${locationReply()} ${facilitiesReply()}`;
   }
 
   if (isAvailabilityQuestion(message)) {
