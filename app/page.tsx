@@ -101,7 +101,13 @@ const galleryImages = [
   "/images/jikmis/family-room-bedroom.jpeg",
   "/images/jikmis/family-room-living.jpeg",
   "/images/jikmis/family-room-second-bedroom.jpeg",
-  "/images/jikmis/family-room-sunroom.jpeg"
+  "/images/jikmis/family-room-sunroom.jpeg",
+  "/images/jikmis/gallery/jikmis-gallery-1736.jpg",
+  "/images/jikmis/gallery/jikmis-gallery-1737.jpg",
+  "/images/jikmis/gallery/jikmis-gallery-1738.jpg",
+  "/images/jikmis/gallery/jikmis-rooftop-stupa-sunset.jpg",
+  "/images/jikmis/gallery/jikmis-rooftop-yoga-view.jpg",
+  "/images/jikmis/gallery/jikmis-rooftop-terrace-view.jpg"
 ];
 
 export default function Home() {
