@@ -19,7 +19,8 @@ import {
   Sparkles,
   Star,
   Users,
-  Wifi
+  Wifi,
+  X
 } from "lucide-react";
 import ApartmentChatbot from "@/components/ApartmentChatbot";
 
@@ -110,9 +111,72 @@ const galleryImages = [
   "/images/jikmis/gallery/jikmis-rooftop-terrace-view.jpg"
 ];
 
+const cafeImages = [
+  {
+    src: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1600&q=82",
+    alt: "Warm wood cafe interior with coffee bar seating"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=900&q=80",
+    alt: "Fresh coffee being served in a cozy cafe"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80",
+    alt: "Coffee cup on a wooden table"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=80",
+    alt: "Fresh latte beside cafe pastries"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=900&q=80",
+    alt: "Small cafe table with warm morning light"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1525610553991-2bede1a236e2?auto=format&fit=crop&w=900&q=80",
+    alt: "Cafe seating area with wooden furniture"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1511081692775-05d0f180a065?auto=format&fit=crop&w=900&q=80",
+    alt: "Freshly baked cafe pastry"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80",
+    alt: "Cozy cafe and restaurant seating"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=900&q=80",
+    alt: "Iced coffee on a cafe table"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1485808191679-5f86510681a2?auto=format&fit=crop&w=900&q=80",
+    alt: "Cafe counter with coffee cups and pastries"
+  }
+];
+
+const popularCafeMenu = [
+  "☕ Cappuccino",
+  "☕ Café Latte",
+  "🥐 Butter Croissant",
+  "🥟 Chicken Momo",
+  "🍜 Thukpa",
+  "🍰 Cheesecake"
+];
+
+const cafeMenu = [
+  { category: "Coffee", items: ["Espresso", "Americano", "Cappuccino", "Café Latte", "Mocha"] },
+  { category: "Tea", items: ["Masala Tea", "Green Tea", "Lemon Tea", "Tibetan Butter Tea"] },
+  { category: "Breakfast", items: ["Omelette & Toast", "Pancakes", "Croissant", "Yogurt & Granola"] },
+  { category: "Light Meals", items: ["Veg Sandwich", "Chicken Sandwich", "French Fries"] },
+  { category: "Tibetan Special", items: ["Veg Momo", "Chicken Momo", "Beef Momo", "Thukpa"] },
+  { category: "Desserts", items: ["Cheesecake", "Chocolate Cake", "Brownie"] },
+  { category: "Cold Drinks", items: ["Iced Latte", "Fresh Lemon Soda", "Mango Smoothie"] }
+];
+
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activePhoto, setActivePhoto] = useState(0);
+  const [isCafeMenuOpen, setIsCafeMenuOpen] = useState(false);
 
   useEffect(() => {
     const updateScrollState = () => setIsScrolled(window.scrollY > 24);
@@ -128,6 +192,53 @@ export default function Home() {
     return () => window.clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    if (!isCafeMenuOpen) return;
+
+    const previousActiveElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousOverflow = document.body.style.overflow;
+
+    const getFocusableElements = () =>
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".cafe-modal button, .cafe-modal [href], .cafe-modal input, .cafe-modal select, .cafe-modal textarea, .cafe-modal [tabindex]:not([tabindex='-1'])"
+        )
+      ).filter((element) => !element.hasAttribute("disabled") && element.offsetParent !== null);
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsCafeMenuOpen(false);
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusableElements = getFocusableElements();
+      if (!focusableElements.length) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+    window.setTimeout(() => document.querySelector<HTMLElement>(".cafe-modal-close")?.focus(), 0);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+      previousActiveElement?.focus();
+    };
+  }, [isCafeMenuOpen]);
+
   const heroImage = useMemo(() => roomShowcase[2].images[activePhoto % roomShowcase[2].images.length], [activePhoto]);
 
   return (
@@ -140,6 +251,7 @@ export default function Home() {
         <nav aria-label="Main navigation">
           <a href="#about">About</a>
           <a href="#rooms">Rooms</a>
+          <a href="#cafe">Café</a>
           <a href="#amenities">Amenities</a>
           <a href="#nearby">Nearby</a>
           <a href="#gallery">Gallery</a>
@@ -226,6 +338,53 @@ export default function Home() {
               </article>
             );
           })}
+        </div>
+      </section>
+
+      <section className="section-shell cafe-section" id="cafe">
+        <div className="cafe-grid">
+          <div className="cafe-media">
+            <div className="cafe-main-frame">
+              <img src={cafeImages[0].src} alt={cafeImages[0].alt} loading="lazy" />
+            </div>
+            <div className="cafe-photo-strip" aria-label="Jikmis Café photo preview">
+              {cafeImages.slice(1).map((image) => (
+                <div className="cafe-thumb" key={image.src}>
+                  <img src={image.src} alt={image.alt} loading="lazy" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="cafe-content">
+            <div className="cafe-topline">
+              <p className="eyebrow"><Coffee size={16} /> Jikmis Café</p>
+              <span className="cafe-badge">Open Daily</span>
+            </div>
+            <h2>☕ Jikmis Café</h2>
+            <p className="cafe-subtitle">Fresh Coffee • Homemade Food • Cozy Atmosphere</p>
+            <p>
+              Take a break and enjoy freshly brewed coffee, delicious breakfasts, homemade pastries, and authentic
+              Tibetan specialties at Jikmis Café. Whether you are starting your morning, working remotely, or relaxing
+              after exploring Boudha, our cozy café offers a warm and peaceful atmosphere for every guest.
+            </p>
+
+            <div className="cafe-menu-card">
+              <span>Popular Menu</span>
+              <div className="cafe-popular-list">
+                {popularCafeMenu.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </div>
+            </div>
+
+            <div className="cafe-footer-row">
+              <strong>Available for Apartment Guests & Visitors</strong>
+              <button className="button primary" type="button" onClick={() => setIsCafeMenuOpen(true)}>
+                View Full Menu
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -340,6 +499,41 @@ export default function Home() {
         <span><Building2 size={16} /> Jikmis Apartment</span>
         <span><Users size={16} /> Serviced apartments in Boudha</span>
       </footer>
+
+      {isCafeMenuOpen && (
+        <div className="cafe-modal-backdrop" role="presentation" onClick={() => setIsCafeMenuOpen(false)}>
+          <div
+            className="cafe-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cafe-menu-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              className="cafe-modal-close"
+              type="button"
+              aria-label="Close Jikmis Café menu"
+              onClick={() => setIsCafeMenuOpen(false)}
+            >
+              <X size={18} />
+            </button>
+            <p className="eyebrow"><Coffee size={16} /> Open Daily</p>
+            <h2 id="cafe-menu-title">Jikmis Café Menu</h2>
+            <div className="cafe-menu-grid">
+              {cafeMenu.map((group) => (
+                <section className="cafe-menu-group" key={group.category}>
+                  <h3>{group.category}</h3>
+                  <ul>
+                    {group.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <ApartmentChatbot />
     </main>

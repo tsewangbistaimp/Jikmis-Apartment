@@ -793,6 +793,231 @@ textarea { resize: vertical; }
   color: var(--brown);
 }
 
+.cafe-section {
+  position: relative;
+}
+
+.cafe-grid {
+  align-items: center;
+  display: grid;
+  gap: 30px;
+  grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
+}
+
+.cafe-media {
+  display: grid;
+  gap: 12px;
+}
+
+.cafe-main-frame,
+.cafe-thumb {
+  background: #fffdf8;
+  border: 1px solid rgba(149, 103, 68, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(82, 55, 35, 0.12);
+  overflow: hidden;
+}
+
+.cafe-main-frame img,
+.cafe-thumb img {
+  height: 100%;
+  object-fit: cover;
+  transition: transform 520ms ease;
+  width: 100%;
+}
+
+.cafe-main-frame {
+  aspect-ratio: 16 / 11;
+}
+
+.cafe-main-frame:hover img,
+.cafe-thumb:hover img {
+  transform: scale(1.045);
+}
+
+.cafe-photo-strip {
+  display: grid;
+  gap: 9px;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+}
+
+.cafe-thumb {
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  box-shadow: 0 10px 26px rgba(82, 55, 35, 0.08);
+}
+
+.cafe-content {
+  animation: fadeUp 680ms ease both;
+  background:
+    linear-gradient(135deg, rgba(255, 253, 248, 0.94), rgba(248, 239, 226, 0.82)),
+    #fffdf8;
+  border: 1px solid rgba(149, 103, 68, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 22px 70px rgba(82, 55, 35, 0.11);
+  padding: clamp(20px, 4vw, 34px);
+}
+
+.cafe-topline,
+.cafe-footer-row {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+.cafe-badge {
+  background: rgba(139, 94, 60, 0.1);
+  border: 1px solid rgba(139, 94, 60, 0.22);
+  border-radius: 999px;
+  color: var(--brown-dark);
+  flex: 0 0 auto;
+  font-size: 0.76rem;
+  font-weight: 900;
+  padding: 8px 11px;
+  text-transform: uppercase;
+}
+
+.cafe-content h2 {
+  margin-bottom: 8px;
+}
+
+.cafe-subtitle {
+  color: var(--brown);
+  font-weight: 900;
+  margin-bottom: 14px;
+}
+
+.cafe-content p:not(.eyebrow):not(.cafe-subtitle) {
+  color: var(--muted);
+  line-height: 1.72;
+}
+
+.cafe-menu-card {
+  background: rgba(255, 253, 248, 0.72);
+  border: 1px solid rgba(149, 103, 68, 0.18);
+  border-radius: 20px;
+  box-shadow: 0 16px 44px rgba(82, 55, 35, 0.09);
+  margin: 22px 0;
+  padding: 18px;
+  backdrop-filter: blur(16px);
+}
+
+.cafe-menu-card > span {
+  color: var(--ink);
+  display: block;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 13px;
+}
+
+.cafe-popular-list {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cafe-popular-list span {
+  background: rgba(139, 94, 60, 0.08);
+  border: 1px solid rgba(139, 94, 60, 0.12);
+  border-radius: 999px;
+  color: #4f3829;
+  font-weight: 800;
+  padding: 9px 11px;
+}
+
+.cafe-footer-row strong {
+  color: var(--ink);
+  line-height: 1.35;
+}
+
+.cafe-modal-backdrop {
+  align-items: center;
+  background: rgba(16, 22, 30, 0.58);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 22px;
+  position: fixed;
+  z-index: 80;
+  backdrop-filter: blur(8px);
+}
+
+.cafe-modal {
+  animation: fadeUp 260ms ease both;
+  background: rgba(255, 253, 248, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  border-radius: 20px;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.32);
+  max-height: min(86vh, 760px);
+  max-width: 920px;
+  overflow: auto;
+  padding: clamp(20px, 4vw, 34px);
+  position: relative;
+  width: min(100%, 920px);
+  backdrop-filter: blur(18px);
+}
+
+.cafe-modal-close {
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  height: 38px;
+  justify-content: center;
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  width: 38px;
+}
+
+.cafe-modal-close:hover,
+.cafe-modal-close:focus-visible {
+  background: var(--brown);
+  color: white;
+}
+
+.cafe-modal-close:focus-visible {
+  outline: 3px solid rgba(201, 164, 90, 0.5);
+  outline-offset: 2px;
+}
+
+.cafe-menu-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 22px;
+}
+
+.cafe-menu-group {
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(149, 103, 68, 0.14);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.cafe-menu-group h3 {
+  color: var(--brown-dark);
+  font-size: 1.08rem;
+}
+
+.cafe-menu-group ul {
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cafe-menu-group li {
+  font-weight: 750;
+}
+
 .luxury-band {
   background:
     linear-gradient(135deg, rgba(201, 164, 90, 0.16), rgba(255, 253, 248, 0.86)),
@@ -975,6 +1200,9 @@ textarea { resize: vertical; }
   .room-grid, .stat-grid, .facility-grid, .pricing-location-grid, .about-section { grid-template-columns: 1fr 1fr; }
   .contact-section { grid-template-columns: 1fr; }
   .contact-actions { justify-content: flex-start; }
+  .cafe-grid { grid-template-columns: 1fr; }
+  .cafe-photo-strip { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .cafe-menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .luxury-room-grid, .review-grid { grid-template-columns: 1fr; }
   .luxury-about, .nearby-section { grid-template-columns: 1fr; }
   .luxury-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1097,6 +1325,27 @@ textarea { resize: vertical; }
   .luxury-about { padding-top: 48px; }
   .nearby-grid, .luxury-gallery { grid-template-columns: 1fr; }
   .luxury-gallery img:nth-child(1), .luxury-gallery img:nth-child(6) { grid-column: span 1; aspect-ratio: 1 / 1; }
+  .cafe-main-frame { aspect-ratio: 4 / 3.2; }
+  .cafe-photo-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cafe-content { padding: 18px; }
+  .cafe-topline,
+  .cafe-footer-row,
+  .cafe-footer-row .button {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .cafe-popular-list,
+  .cafe-menu-grid {
+    grid-template-columns: 1fr;
+  }
+  .cafe-modal-backdrop { padding: 12px; }
+  .cafe-modal {
+    max-height: calc(100dvh - 24px);
+    padding: 18px;
+  }
+  .cafe-modal h2 {
+    padding-right: 44px;
+  }
   .room-title-row, .room-price-row { align-items: flex-start; flex-direction: column; }
   .room-price-row span { text-align: left; }
   .luxury-room-card,
@@ -1113,9 +1362,46 @@ textarea { resize: vertical; }
   .map-card iframe { height: 420px; }
 }
 
+@media (prefers-color-scheme: dark) {
+  .cafe-content,
+  .cafe-modal,
+  .cafe-menu-card,
+  .cafe-menu-group {
+    background: rgba(31, 41, 55, 0.9);
+    border-color: rgba(201, 164, 90, 0.28);
+    color: #fffaf2;
+  }
+
+  .cafe-content h2,
+  .cafe-modal h2,
+  .cafe-footer-row strong,
+  .cafe-menu-card > span {
+    color: #fffaf2;
+  }
+
+  .cafe-content p:not(.eyebrow):not(.cafe-subtitle),
+  .cafe-menu-group ul {
+    color: rgba(255, 250, 242, 0.78);
+  }
+
+  .cafe-badge,
+  .cafe-popular-list span {
+    background: rgba(201, 164, 90, 0.16);
+    border-color: rgba(201, 164, 90, 0.3);
+    color: #f9e7bd;
+  }
+
+  .cafe-menu-group h3,
+  .cafe-subtitle {
+    color: #f3cf84;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .chat-helper-note,
   .typing-indicator span,
+  .cafe-content,
+  .cafe-modal,
   .luxury-hero-content,
   .hero-booking-card,
   .luxury-room-card {
@@ -1124,6 +1410,8 @@ textarea { resize: vertical; }
   .chat-helper-note,
   .chatbot-launcher,
   .button,
+  .cafe-main-frame img,
+  .cafe-thumb img,
   .luxury-room-card,
   .premium-card,
   .nearby-card,
