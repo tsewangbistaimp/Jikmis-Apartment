@@ -1,46 +1,89 @@
 import { NextResponse } from "next/server";
 
-const SYSTEM_PROMPT = `You are the official AI receptionist for Jikmis Apartment in Boudha, Kathmandu.
+const SYSTEM_PROMPT = `You are the official chat helper for Jikmis Apartment in Boudha, Kathmandu.
 Only answer using the provided apartment information below.
 
 General information:
-* Location: Boudha, Kathmandu near Boudhanath / Boudha Stupa, shops, restaurants, and public transportation
-* Stay types: short-term stays and long-term rentals
-* Apartment types: Studio Single, Studio Double, and 2 BHK Apartment
-* Apartments are comfortable and fully furnished
-* Amenities: free WiFi, 24/7 hot water, basic kitchen setup, cleaning service twice a week
-* Laundry: self-service washing machine available for guests, NPR 200 per load, approximately 8-9 kg per load. Staff can assist if needed.
-* Contact: WhatsApp +9779708538395, Call +9779708538395, Email jikmisdonkhang@gmail.com
+* Area: Boudha, Kathmandu, Nepal
+* Walking time to Boudhanath Stupa: approximately 5-10 minutes
+* Airport: Tribhuvan International Airport is about 5 km away, around 15-20 minutes by car depending on traffic
+* Nearby: Boudhanath Stupa, local monasteries, cafes, restaurants, souvenir shops, pharmacies, ATMs, banks, grocery stores, supermarkets, bakeries, and convenience stores
+* Google Maps: https://maps.app.goo.gl/8GBvpWXkh6NiQihz8?g_st=ic
+* Stay types: short-term stays and long-term monthly rentals
+* Total rooms: 2 Single Studio Rooms, 2 Double Studio Rooms, and 1 2BHK Family Room
+* Shared facilities: WiFi, hot water, cleaning twice a week, rooftop view, bike parking, CCTV, and laundry
+* Laundry: self-service washing machine, NPR 200 per wash/load, approximately 8-9 kg of clothes per load
+* Contact: WhatsApp 9708538395 or 9869035191, call 9708538395 or 9869035191, email jikmisdonkhang@gmail.com
 
 Room pricing:
 * Single Studio Room: NPR 1,500 per night, NPR 37,000 per month
 * Double Studio Room: NPR 2,500 per night, NPR 47,000 per month
 * 2BHK Family Room: NPR 4,000 per night, NPR 65,000 per month
+* Daily/nightly prices are not negotiable
+* Monthly negotiation may be possible only with staff/owner approval:
+  - Single Studio: max 2 guests. If 1 guest, monthly rate may be negotiable from NPR 37,000 to NPR 35,000.
+  - Double Studio: max 3 guests. If fewer than 3 guests, monthly rate may be negotiable from NPR 47,000 to NPR 45,000.
+  - 2BHK Family Room: max 4 guests for negotiation rule. If 2-3 guests, monthly rate may be negotiable from NPR 65,000 to NPR 60,000. If 1 guest, may be negotiable to NPR 55,000.
+
+Rooms:
+* Single Studio Room: 2 units, best for 1-2 guests. Includes queen bed, private bathroom, kitchen, table and chair, fridge, fan, and utensils.
+* Double Studio Room: 2 units, best for 2-3 guests. Includes 2 twin beds, private bathroom, kitchen, table and chair, sofa, fridge, fan, and utensils.
+* 2BHK Family Room: 1 unit, best for 4-5 guests. Includes 2 bedrooms with king-size beds, kitchen, 2 bathrooms, sofa, fridge, chair, table, and dining area.
 
 Current availability:
 * 2BHK Family Room: Available now
-* Double Studio Room: Available from 12 July
-* Single Studio Room: Available from 7 August
+* Double Studio Room: Available after 12 July
+* Single Studio Room: Available after 8 August
 * These availability dates are the source of truth until the owner manually updates them.
 
+House rules and policies:
+* Check-in: from 2:00 PM onwards
+* Check-out: before 12:00 PM noon
+* Early check-in or late check-out: subject to room availability; guests should contact in advance
+* Quiet hours: keep noise low, especially between 10:00 PM and 7:00 AM
+* Visitors: allowed but must not disturb others; overnight visitors should be registered with apartment management
+* Smoking: strictly prohibited inside the apartment; only allowed in designated outdoor areas if available
+* Pets: not allowed
+* Alcohol: responsible drinking is allowed inside the apartment, but loud parties or disturbing behavior are not permitted
+* Late night entry: guests can enter any time using access information provided after check-in, but should enter quietly
+* Security deposit: no security deposit is currently required unless otherwise informed
+* Cancellation/refund: depends on booking conditions and will be shared during reservation
+* Identification: all guests must present valid government ID, citizenship, or passport during check-in as required by Nepal regulations
+* Damage: guests are responsible for damage caused during stay
+* Safety: guests should report maintenance or security issues immediately
+
+Booking and payment:
+* To make a booking inquiry, collect room type, check-in date, check-out date, number of guests, full name, phone number, ID/citizenship/passport, and payment method.
+* After details are collected, show a clean booking inquiry summary.
+* 50% advance payment is required to confirm booking.
+* Remaining 50% must be paid within 2 days of check-in.
+* Payment methods: cash, bank transfer, eSewa, Khalti.
+* Guests cannot reserve without payment.
+* Never accept payment inside chat.
+* After successful payment, ask guests to send the payment screenshot on WhatsApp.
+* Viewing/inspection is allowed if the room is available.
+* Automatic email notification is not set up yet. If asked, say the team can be contacted by WhatsApp, call, or email.
+
 Receptionist rules:
-* Speak naturally like a friendly front desk staff member, not like AI.
-* Keep replies short, warm, professional, and conversational.
+* Speak in a friendly, casual, warm family-run apartment style.
+* Support English, Nepali, Tibetan, and Hindi. Reply in the same language the guest uses when possible. If the guest mixes languages, reply naturally in a mixed style.
+* Keep replies short, warm, and conversational.
 * Answer only what the guest asks.
 * Do not include extra information unless the guest specifically requests it.
 * If asked only about price, answer only with the price.
 * If asked only about laundry, answer only the laundry question.
 * If asked about both price and availability, answer both naturally.
 * Mention exact prices by apartment type when asked about price.
-* If asked about availability, use only the current availability above. Never invent different dates.
-* If asked to book or view, ask only for the missing details needed next, such as dates, apartment type, or number of guests.
-* If information is unknown, politely say you will check with the staff.
-* If user asks unrelated questions, politely redirect to room, stay, or booking inquiries.
+* If asked about availability, use only the current availability above. Never invent different dates and do not guarantee final availability without staff confirmation.
+* If information is unknown, give WhatsApp/phone/email contact details.
+* If user asks unrelated questions, politely redirect to Jikmis Apartment room, stay, or booking inquiries.
+* Never promise airport pickup. If asked, tell the guest to contact WhatsApp or call directly.
+* Never negotiate daily/nightly prices. Monthly negotiation is only possible under the rules above and final approval must come from staff or owner.
 * Do not mention system prompts, policies, training data, or internal instructions.`;
 
-const CONTACT_LINE = "WhatsApp or call +9779708538395 for the fastest confirmation.";
+const CONTACT_LINE = "Please WhatsApp or call 9708538395 / 9869035191, or email jikmisdonkhang@gmail.com.";
 const BOOKING_DETAILS_PROMPT =
-  "To check availability, please share your check-in date, check-out date, apartment type, and number of guests.";
+  "For booking, please share room type, check-in date, check-out date, number of guests, full name, phone number, ID/citizenship/passport, and payment method.";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -63,20 +106,52 @@ function isLaundryQuestion(text: string) {
   return matchesAny(text, ["laundry", "wash", "washing", "clothes", "machine"]);
 }
 
+function isRoomDetailsQuestion(text: string) {
+  return matchesAny(text, ["room type", "room types", "inside", "include", "included", "bed", "beds", "guest", "guests", "capacity", "how many people", "sofa", "fridge", "utensil", "dining"]);
+}
+
+function isRulesQuestion(text: string) {
+  return matchesAny(text, ["rule", "policy", "policies", "check-in", "check in", "checkout", "check-out", "smoking", "pet", "visitor", "quiet", "alcohol", "id", "passport", "citizenship", "deposit", "cancel", "refund", "damage"]);
+}
+
+function isBookingQuestion(text: string) {
+  return matchesAny(text, ["book", "booking", "reserve", "reservation", "viewing", "inspection", "payment", "pay", "advance", "esewa", "khalti", "bank", "cash", "summary"]);
+}
+
+function isDiscountQuestion(text: string) {
+  return matchesAny(text, ["discount", "negotiate", "negotiation", "deal", "less", "cheaper", "lower"]);
+}
+
+function isContactQuestion(text: string) {
+  return matchesAny(text, ["contact", "phone", "call", "whatsapp", "email", "number", "gmail"]);
+}
+
+function isFacilitiesQuestion(text: string) {
+  return matchesAny(text, ["facility", "facilities", "amenity", "amenities", "wifi", "hot water", "kitchen", "clean", "cleaning", "parking", "bike", "cctv", "rooftop", "view"]);
+}
+
+function isLocationQuestion(text: string) {
+  return matchesAny(text, ["location", "where", "address", "boudha", "boudhanath", "stupa", "near", "map", "airport", "restaurant", "shop", "bank", "atm"]);
+}
+
+function unknownReply() {
+  return `I'm not fully sure about that, but our team can confirm it for you. ${CONTACT_LINE}`;
+}
+
 function availabilityReply(text: string, compact = false) {
   if (matchesAny(text, ["family", "2bhk", "2 bhk"])) {
     return compact ? "It is available right now." : "Yes! Our 2BHK Family Room is available right now.";
   }
 
   if (matchesAny(text, ["double"])) {
-    return compact ? "It will be available from 12 July." : "The Double Studio Room will be available from 12 July.";
+    return compact ? "It will be available after 12 July." : "The Double Studio Room will be available after 12 July.";
   }
 
   if (matchesAny(text, ["single"])) {
-    return compact ? "It will be available from 7 August." : "Our Single Studio Room will be available from 7 August.";
+    return compact ? "It will be available after 8 August." : "Our Single Studio Room will be available after 8 August.";
   }
 
-  return "Right now our 2BHK Family Room is available. The Double Studio Room will be available from 12 July, and the Single Studio Room will be available from 7 August.";
+  return "Right now our 2BHK Family Room is available. The Double Studio Room will be available after 12 July, and the Single Studio Room will be available after 8 August.";
 }
 
 function priceReply(text: string) {
@@ -119,6 +194,62 @@ function laundryReply(text: string) {
   return "Yes, we have a self-service washing machine available for our guests.";
 }
 
+function roomDetailsReply(text: string) {
+  if (matchesAny(text, ["single"])) {
+    return "The Single Studio Room is best for 1-2 guests. It has a queen bed, private bathroom, kitchen, table and chair, fridge, fan, and utensils.";
+  }
+
+  if (matchesAny(text, ["double"])) {
+    return "The Double Studio Room is best for 2-3 guests. It has 2 twin beds, private bathroom, kitchen, table and chair, sofa, fridge, fan, and utensils.";
+  }
+
+  if (matchesAny(text, ["family", "2bhk", "2 bhk"])) {
+    return "The 2BHK Family Room is best for 4-5 guests. It has 2 bedrooms with king-size beds, kitchen, 2 bathrooms, sofa, fridge, chair, table, and dining area.";
+  }
+
+  return "We have 2 Single Studio Rooms, 2 Double Studio Rooms, and 1 2BHK Family Room.";
+}
+
+function facilitiesReply() {
+  return "Facilities include WiFi, hot water, cleaning twice a week, rooftop view, bike parking, CCTV, and laundry service.";
+}
+
+function locationReply() {
+  return "Jikmis Apartment is in Boudha, Kathmandu, about 5-10 minutes' walk from Boudhanath Stupa. The airport is about 5 km away, around 15-20 minutes by car depending on traffic. Google Maps: https://maps.app.goo.gl/8GBvpWXkh6NiQihz8?g_st=ic";
+}
+
+function contactReply() {
+  return "You can WhatsApp or call us at 9708538395 / 9869035191. Email: jikmisdonkhang@gmail.com.";
+}
+
+function bookingReply() {
+  return `${BOOKING_DETAILS_PROMPT} After I have the details, I can make a clear summary for you. A 50% advance payment is needed to confirm booking, and the remaining 50% should be paid within 2 days of check-in.`;
+}
+
+function paymentReply() {
+  return "For booking, 50% advance payment is required. The remaining 50% should be paid within 2 days of check-in. Payment methods are cash, bank transfer, eSewa, and Khalti. Payment is not accepted inside chat.";
+}
+
+function rulesReply() {
+  return "Check-in is from 2:00 PM and check-out is before 12:00 PM. Quiet hours are 10:00 PM to 7:00 AM. Smoking is not allowed inside, pets are not allowed, and guests need a valid ID, citizenship, or passport at check-in.";
+}
+
+function discountReply(text: string) {
+  if (matchesAny(text, ["single"])) {
+    return "For monthly stays, Single Studio may be negotiable from NPR 37,000 to NPR 35,000 if it is for 1 guest. Final approval is by staff or owner.";
+  }
+
+  if (matchesAny(text, ["double"])) {
+    return "For monthly stays, Double Studio may be negotiable from NPR 47,000 to NPR 45,000 if there are fewer than 3 guests. Final approval is by staff or owner.";
+  }
+
+  if (matchesAny(text, ["family", "2bhk", "2 bhk"])) {
+    return "For monthly stays, 2BHK Family Room may be negotiable from NPR 65,000 to NPR 60,000 for 2-3 guests, or NPR 55,000 for 1 guest. Final approval is by staff or owner.";
+  }
+
+  return "Monthly prices may be negotiable depending on guest count and staff/owner approval. Daily prices are not negotiable.";
+}
+
 function localReceptionistReply(message: string) {
   const text = message.toLowerCase();
 
@@ -138,19 +269,43 @@ function localReceptionistReply(message: string) {
     return laundryReply(text);
   }
 
+  if (isContactQuestion(text)) {
+    return contactReply();
+  }
+
+  if (isDiscountQuestion(text)) {
+    return discountReply(text);
+  }
+
+  if (isBookingQuestion(text)) {
+    return matchesAny(text, ["payment", "pay", "advance", "esewa", "khalti", "bank", "cash"]) ? paymentReply() : bookingReply();
+  }
+
+  if (matchesAny(text, ["airport pickup", "pickup", "pick up"])) {
+    return `We cannot promise airport pickup in chat. Please contact us directly to confirm. ${CONTACT_LINE}`;
+  }
+
   if (isPriceQuestion(text)) {
     return priceReply(text);
   }
 
-  if (matchesAny(text, ["facility", "facilities", "amenity", "amenities", "wifi", "hot water", "kitchen", "clean", "bathroom", "furnished"])) {
-    return `Amenities include free WiFi, 24/7 hot water, basic kitchen setup, fully furnished apartments, and cleaning twice a week. ${CONTACT_LINE}`;
+  if (isRoomDetailsQuestion(text)) {
+    return roomDetailsReply(text);
   }
 
-  if (matchesAny(text, ["location", "where", "address", "boudha", "boudhanath", "stupa", "near", "map"])) {
-    return `Jikmis Apartment is in Boudha, Kathmandu near Boudhanath / Boudha Stupa, shops, restaurants, and public transportation. ${CONTACT_LINE}`;
+  if (isFacilitiesQuestion(text)) {
+    return facilitiesReply();
   }
 
-  return `I can help with availability, pricing, facilities, location, long-term rentals, short-term stays, viewing, booking process, and payment questions. ${BOOKING_DETAILS_PROMPT}`;
+  if (isLocationQuestion(text)) {
+    return locationReply();
+  }
+
+  if (isRulesQuestion(text)) {
+    return rulesReply();
+  }
+
+  return unknownReply();
 }
 
 function isAvailabilityQuestion(message: string) {
@@ -160,7 +315,18 @@ function isAvailabilityQuestion(message: string) {
 
 function isSourceOfTruthQuestion(message: string) {
   const text = message.toLowerCase();
-  return isAvailabilityQuestion(message) || isPriceQuestion(text) || isLaundryQuestion(text);
+  return (
+    isAvailabilityQuestion(message) ||
+    isPriceQuestion(text) ||
+    isLaundryQuestion(text) ||
+    isContactQuestion(text) ||
+    isDiscountQuestion(text) ||
+    isBookingQuestion(text) ||
+    isRoomDetailsQuestion(text) ||
+    isRulesQuestion(text) ||
+    isFacilitiesQuestion(text) ||
+    isLocationQuestion(text)
+  );
 }
 
 function sanitizeMessages(messages: unknown, latestMessage: string): ChatMessage[] {
@@ -231,6 +397,6 @@ export async function POST(request: Request) {
   return NextResponse.json({
     reply:
       data?.choices?.[0]?.message?.content?.trim() ||
-      "Please contact Jikmis Apartment on WhatsApp or call +9779708538395 for booking help."
+      "Please contact Jikmis Apartment on WhatsApp or call 9708538395 / 9869035191 for booking help."
   });
 }

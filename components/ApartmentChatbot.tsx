@@ -9,14 +9,14 @@ type ChatMessage = {
   content: string;
 };
 
-const quickReplies = ["Pricing", "Availability", "Book or viewing", "Facilities", "Laundry"];
+const quickReplies = ["Pricing", "Availability", "Booking", "Room details", "Facilities", "Rules", "Location"];
 
 const starterMessages: ChatMessage[] = [
   {
     id: "welcome",
     role: "bot",
     content:
-      "Hello! Welcome to Jikmis Apartment in Boudha. Namaste, hajur lai k sahayog chahiyo hola? I can help with availability, pricing, bookings, and apartment questions."
+      "Hello! Namaste, Tashi delek, Namaskar. Welcome to Jikmis Apartment in Boudha. Ask me about rooms, pricing, availability, booking, facilities, location, or house rules."
   }
 ];
 
@@ -97,7 +97,7 @@ export default function ApartmentChatbot() {
           role: "bot",
           content:
             data.reply ||
-            "Please contact us on WhatsApp or call +9779708538395 for the fastest booking help."
+            "Please contact us on WhatsApp or call 9708538395 / 9869035191 for the fastest booking help."
         }
       ]);
     } catch {
@@ -106,8 +106,8 @@ export default function ApartmentChatbot() {
         {
           id: `bot-${messageIdRef.current}`,
           role: "bot",
-          content:
-            "Sorry, I cannot connect right now. Please WhatsApp or call +9779708538395 for room inquiries."
+            content:
+              "Sorry, I cannot connect right now. Please WhatsApp or call 9708538395 / 9869035191 for room inquiries."
         }
       ]);
     } finally {
