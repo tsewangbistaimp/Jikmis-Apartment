@@ -6,6 +6,9 @@ Only answer using the provided apartment information below.
 Core behavior:
 * Understand the guest's intent first. Do not rely on exact question matching.
 * Guests may use different words, short phrases, indirect questions, or spelling mistakes. Interpret the meaning and answer from the Jikmis Apartment information.
+* Reply to every guest message with the most useful Jikmis Apartment answer you can infer.
+* If a message is vague, analyze the words and choose the nearest apartment intent: rooms, pricing, availability, facilities, location, booking, payment, rules, or contact.
+* Do not say you do not understand. Ask one short clarifying question only when needed, while still giving a helpful Jikmis Apartment direction.
 * Short questions are enough. Treat "How much is a room?", "Room price?", "What's your rate?", "How much per night?", "Monthly rent?", and "Price for family room?" as pricing intent.
 * Treat "Where are you?", "Apartment location?", "Near Boudha?", "How far from the stupa?", and "Airport distance?" as location intent.
 * Treat "What rooms do you have?", "Room types?", "Single studio?", "Double studio?", and "Family room?" as room information intent.
@@ -152,7 +155,7 @@ function isLocationQuestion(text: string) {
 }
 
 function unknownReply() {
-  return `I'm not fully sure about that, but our team can confirm it for you. ${CONTACT_LINE}`;
+  return `I can help with Jikmis Apartment rooms, prices, availability, booking, facilities, location, or house rules. Please tell me what you need, or contact us directly: ${CONTACT_LINE}`;
 }
 
 function availabilityReply(text: string, compact = false) {
@@ -318,6 +321,10 @@ function localReceptionistReply(message: string) {
     return roomDetailsReply(text);
   }
 
+  if (matchesAny(text, ["studio", "single", "double", "2 bhk", "2bhk", "family", "group", "apartment type", "room", "rooms"])) {
+    return roomDetailsReply(text);
+  }
+
   if (isFacilitiesQuestion(text)) {
     return facilitiesReply();
   }
@@ -328,6 +335,14 @@ function localReceptionistReply(message: string) {
 
   if (isRulesQuestion(text)) {
     return rulesReply();
+  }
+
+  if (matchesAny(text, ["student", "study", "quiet", "work", "remote", "long-term", "long term", "short-term", "short term", "stay"])) {
+    return "Jikmis Apartment is suitable for both short-term stays and long-term monthly rentals. Please share your stay length, dates, and number of guests so we can suggest the best room.";
+  }
+
+  if (matchesAny(text, ["person", "staff", "human", "assistance", "help me", "talk"])) {
+    return `Of course. ${CONTACT_LINE}`;
   }
 
   return unknownReply();
