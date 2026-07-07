@@ -2,12 +2,28 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://your-vercel-domain.vercel.app"),
   title: {
-    default: "Jikmis Apartment | Luxury Serviced Apartments in Boudha",
-    template: "%s | Jikmis Apartment"
+    default: "TsewangBistaX | Technology, Business & Innovation",
+    template: "%s | TsewangBistaX"
   },
   description:
-    "Luxury serviced apartments in Boudha, Kathmandu with studio rooms, family rooms, direct booking, and AI receptionist support."
+    "Premium portfolio of Tsewang Bista, a developer, AI marketer, entrepreneur, business owner, and hospitality professional from Kathmandu, Nepal.",
+  keywords: [
+    "Tsewang Bista",
+    "TsewangBistaX",
+    "AI marketer Nepal",
+    "Next.js developer Nepal",
+    "UI UX designer Nepal",
+    "shoe business Nepal",
+    "Mustang apple farming"
+  ],
+  openGraph: {
+    title: "TsewangBistaX",
+    description: "Where Technology, Business & Innovation Meet.",
+    images: ["/images/tsewang-bista-profile.jpeg"],
+    type: "website"
+  }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

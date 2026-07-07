@@ -1,538 +1,504 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
 import {
-  Bath,
-  BedDouble,
-  Building2,
-  Car,
-  Check,
-  ChefHat,
-  Coffee,
-  HeartHandshake,
+  ArrowUpRight,
+  Bot,
+  CheckCircle2,
+  Code2,
+  Github,
+  Globe2,
+  Hotel,
+  Instagram,
+  Layers3,
+  Linkedin,
+  Mail,
   MapPin,
   MessageCircle,
-  Phone,
-  Plane,
-  ShieldCheck,
+  PackageCheck,
+  ShoppingBag,
   Sparkles,
+  Sprout,
   Star,
-  Users,
-  Wifi,
-  X
+  Target,
+  TrendingUp,
 } from "lucide-react";
-import ApartmentChatbot from "@/components/ApartmentChatbot";
+import Image from "next/image";
+import { FormEvent, useEffect, useState } from "react";
 
-const roomShowcase = [
+const navItems = ["About", "Skills", "Work", "Services", "Orders", "Contact"];
+
+const metrics = [
+  ["10+", "Skill Domains"],
+  ["7", "Industries"],
+  ["5", "Languages"]
+];
+
+const skills = [
+  "React",
+  "Next.js",
+  "Node.js",
+  "JavaScript",
+  "Python",
+  "Java",
+  "SQL",
+  "Figma",
+  "AI Marketing",
+  "Meta Ads",
+  "Email Funnels",
+  "E-commerce",
+  "B2B Sales",
+  "Hospitality"
+];
+
+const services = [
   {
-    title: "Single Studio",
-    price: "NPR 1,500 / day",
-    monthly: "NPR 37,000 / month",
-    guests: "1-2 guests",
-    description: "A calm furnished studio with warm wooden floors, private bathroom, and a compact kitchen setup.",
-    images: ["/images/jikmis/single-studio-bedroom.jpeg", "/images/jikmis/single-studio-kitchen.jpeg"],
-    amenities: ["Queen bed", "Kitchen setup", "Private bathroom", "Free WiFi"]
+    icon: Code2,
+    title: "Web Development",
+    body: "Modern websites, portfolio systems, landing pages, dashboards, and scalable web apps with clean code."
   },
   {
-    title: "Double Studio",
-    price: "NPR 2,500 / day",
-    monthly: "NPR 47,000 / month",
-    guests: "2-3 guests",
-    description: "A bright double studio with generous sleeping space, seating, kitchen area, and hot-water bathroom.",
-    images: [
-      "/images/jikmis/double-studio-bedroom.jpeg",
-      "/images/jikmis/double-studio-lounge.jpeg",
-      "/images/jikmis/double-studio-bathroom.jpeg"
-    ],
-    amenities: ["Twin beds", "Seating area", "Kitchen setup", "24/7 hot water"]
+    icon: Bot,
+    title: "AI Marketing Systems",
+    body: "AI content workflows, lead funnels, automations, campaign ideas, and smarter growth operations."
   },
   {
-    title: "Family Room",
-    price: "NPR 4,000 / day",
-    monthly: "NPR 65,000 / month",
-    guests: "Families or groups",
-    description: "A spacious family apartment with separate bedroom areas, lounge space, dining corner, and Boudha light.",
-    images: [
-      "/images/jikmis/family-room-bedroom.jpeg",
-      "/images/jikmis/family-room-living.jpeg",
-      "/images/jikmis/family-room-second-bedroom.jpeg",
-      "/images/jikmis/family-room-sunroom.jpeg"
-    ],
-    amenities: ["Family layout", "Living area", "Kitchen setup", "Large windows"]
+    icon: Target,
+    title: "Performance Marketing",
+    body: "Meta ads, social growth, email marketing, customer acquisition, and conversion-focused strategy."
+  },
+  {
+    icon: Layers3,
+    title: "UI/UX Design",
+    body: "Premium interfaces, product flows, Figma design, responsive layouts, and brand-first digital experiences."
   }
 ];
 
-const amenities = [
-  { icon: Wifi, title: "Free WiFi", text: "Reliable internet included for every stay." },
-  { icon: Bath, title: "24/7 Hot Water", text: "Comfortable bathrooms with hot water access." },
-  { icon: ChefHat, title: "Kitchen Setup", text: "Basic kitchen essentials for easy daily living." },
-  { icon: Sparkles, title: "Cleaning Service", text: "Housekeeping support twice a week." },
-  { icon: ShieldCheck, title: "Secure Stay", text: "Comfort-focused serviced apartment environment." },
-  { icon: Car, title: "Motorbike Parking", text: "Convenient parking for guests with bikes." }
-];
-
-const attractions = [
-  { icon: MapPin, title: "Boudhanath Stupa", text: "A short walk to one of Kathmandu's most loved landmarks." },
-  { icon: Coffee, title: "Cafes & Restaurants", text: "Easy access to local cafes, shops, and dining." },
-  { icon: Plane, title: "Airport Access", text: "Convenient route to Tribhuvan International Airport." },
-  { icon: Building2, title: "Daily Essentials", text: "Public transport, markets, and daily needs nearby." }
-];
-
-const reviews = [
+const ventures = [
   {
-    quote: "The room was peaceful, clean, and close to Boudha. Perfect for a longer Kathmandu stay.",
-    name: "Guest from Nepal"
+    icon: ShoppingBag,
+    title: "TsewangBista Shoes",
+    tag: "B2B / B2C commerce",
+    body: "Retail and wholesale shoe business focused on sales, sourcing, customer trust, and market growth."
   },
   {
-    quote: "Loved the warm wooden rooms and kitchen setup. The location made everything simple.",
-    name: "Monthly guest"
+    icon: Sprout,
+    title: "Mustang Apple Farming",
+    tag: "Agriculture business",
+    body: "A Mustang-rooted venture connecting premium local apples with stronger branding and distribution."
   },
   {
-    quote: "A comfortable family space with helpful contact and easy access to restaurants.",
-    name: "Family traveler"
+    icon: Hotel,
+    title: "Hospitality Leadership",
+    tag: "Operations & service",
+    body: "Hotel management, supervision, housekeeping, barista service, and reliable guest experience."
   }
 ];
 
-const galleryImages = [
-  "/images/jikmis/single-studio-bedroom.jpeg",
-  "/images/jikmis/single-studio-kitchen.jpeg",
-  "/images/jikmis/double-studio-bedroom.jpeg",
-  "/images/jikmis/double-studio-lounge.jpeg",
-  "/images/jikmis/family-room-bedroom.jpeg",
-  "/images/jikmis/family-room-living.jpeg",
-  "/images/jikmis/family-room-second-bedroom.jpeg",
-  "/images/jikmis/family-room-sunroom.jpeg",
-  "/images/jikmis/gallery/jikmis-gallery-1736.jpg",
-  "/images/jikmis/gallery/jikmis-gallery-1737.jpg",
-  "/images/jikmis/gallery/jikmis-gallery-1738.jpg",
-  "/images/jikmis/gallery/jikmis-rooftop-stupa-sunset.jpg",
-  "/images/jikmis/gallery/jikmis-rooftop-yoga-view.jpg",
-  "/images/jikmis/gallery/jikmis-rooftop-terrace-view.jpg"
-];
-
-const cafeImages = [
+const portfolio = [
   {
-    src: "/images/jikmis/cafe/jikmis-cafe-main.jpg",
-    alt: "Warm seating area inside Jikmis Cafe"
+    title: "AI Growth Engine",
+    type: "Marketing Automation",
+    body: "A modern lead and content workflow for faster campaign execution."
   },
   {
-    src: "/images/jikmis/cafe/jikmis-cafe-window.jpg",
-    alt: "Window seating and wooden tables at Jikmis Cafe"
+    title: "Shoe Commerce System",
+    type: "Business Operations",
+    body: "Order collection, customer communication, and business pipeline structure."
   },
   {
-    src: "/images/jikmis/cafe/jikmis-cafe-cozy-seating.jpg",
-    alt: "Cozy Jikmis Cafe seating with warm wooden furniture"
-  },
-  {
-    src: "/images/jikmis/cafe/jikmis-cafe-counter.jpg",
-    alt: "Coffee counter and pastry display at Jikmis Cafe"
-  },
-  {
-    src: "/images/jikmis/cafe/jikmis-cafe-iced-coffee.jpg",
-    alt: "Iced coffee on a wooden table at Jikmis Cafe"
-  },
-  {
-    src: "/images/jikmis/cafe/jikmis-cafe-orange-coffee.jpg",
-    alt: "Cold coffee with orange garnish at Jikmis Cafe"
-  },
-  {
-    src: "/images/jikmis/cafe/jikmis-cafe-mango-drink.jpg",
-    alt: "Colorful mango iced drink at Jikmis Cafe"
-  },
-  {
-    src: "/images/jikmis/cafe/jikmis-cafe-berry-drink.jpg",
-    alt: "Berry iced drink served at Jikmis Cafe"
-  },
-  {
-    src: "/images/jikmis/cafe/jikmis-cafe-table-corner.jpg",
-    alt: "Wooden table corner inside Jikmis Cafe"
-  },
-  {
-    src: "/images/jikmis/cafe/jikmis-cafe-lounge.jpg",
-    alt: "Bright lounge seating at Jikmis Cafe"
+    title: "Luxury Portfolio UI",
+    type: "Web / UI Design",
+    body: "Premium personal brand presentation for clients, partners, investors, and employers."
   }
 ];
 
-const popularCafeMenu = [
-  "☕ Cappuccino",
-  "☕ Café Latte",
-  "🧊 Iced Latte",
-  "🥤 Fresh Lemon Soda",
-  "🥐 Bakery Items",
-  "🍰 Cheesecake"
+const experiences = [
+  "Entrepreneur and business development operator",
+  "Software and web developer with React, Next.js, Node.js, and SQL",
+  "AI marketing specialist for content, funnels, and automation",
+  "Hospitality professional across hotel operations and service",
+  "Sales-focused operator across retail, wholesale, and customer growth"
 ];
 
-const cafeMenu = [
-  { category: "Coffee", items: ["Espresso", "Americano", "Cappuccino", "Café Latte", "Mocha"] },
-  { category: "Tea", items: ["Masala Tea", "Green Tea", "Lemon Tea", "Tibetan Butter Tea"] },
-  { category: "Cold Drinks", items: ["Iced Latte", "Fresh Lemon Soda", "Mango Smoothie", "Seasonal Cooler"] },
-  { category: "Bakery", items: ["Butter Croissant", "Cheesecake", "Chocolate Cake", "Brownie", "Fresh Bakery Items"] }
+const testimonials = [
+  {
+    quote: "A rare mix of technical skill, business thinking, and hands-on execution.",
+    name: "Business Partner"
+  },
+  {
+    quote: "Tsewang understands both digital presence and real-world customer experience.",
+    name: "Client Perspective"
+  }
 ];
+
+const socials = [
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/tsewang-bista-a62227310/", icon: Linkedin },
+  { label: "GitHub", href: "https://github.com/tsewangbistaimp", icon: Github },
+  { label: "Instagram", href: "https://www.instagram.com/wan_geh/", icon: Instagram }
+];
+
+type OrderStatus = "idle" | "sending" | "success" | "error";
 
 export default function Home() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activePhoto, setActivePhoto] = useState(0);
-  const [isCafeMenuOpen, setIsCafeMenuOpen] = useState(false);
+  const [orderStatus, setOrderStatus] = useState<OrderStatus>("idle");
+  const [orderMessage, setOrderMessage] = useState("");
 
   useEffect(() => {
-    const updateScrollState = () => setIsScrolled(window.scrollY > 24);
-    updateScrollState();
-    window.addEventListener("scroll", updateScrollState);
-    return () => window.removeEventListener("scroll", updateScrollState);
-  }, []);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActivePhoto((current) => current + 1);
-    }, 2000);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!isCafeMenuOpen) return;
-
-    const previousActiveElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const previousOverflow = document.body.style.overflow;
-
-    const getFocusableElements = () =>
-      Array.from(
-        document.querySelectorAll<HTMLElement>(
-          ".cafe-modal button, .cafe-modal [href], .cafe-modal input, .cafe-modal select, .cafe-modal textarea, .cafe-modal [tabindex]:not([tabindex='-1'])"
-        )
-      ).filter((element) => !element.hasAttribute("disabled") && element.offsetParent !== null);
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsCafeMenuOpen(false);
-        return;
-      }
-
-      if (event.key !== "Tab") return;
-
-      const focusableElements = getFocusableElements();
-      if (!focusableElements.length) return;
-
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-
-      if (event.shiftKey && document.activeElement === firstElement) {
-        event.preventDefault();
-        lastElement.focus();
-      } else if (!event.shiftKey && document.activeElement === lastElement) {
-        event.preventDefault();
-        firstElement.focus();
-      }
+    const moveGlow = (event: PointerEvent) => {
+      document.documentElement.style.setProperty("--mouse-x", `${event.clientX}px`);
+      document.documentElement.style.setProperty("--mouse-y", `${event.clientY}px`);
     };
 
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", handleKeyDown);
-    window.setTimeout(() => document.querySelector<HTMLElement>(".cafe-modal-close")?.focus(), 0);
+    const revealTargets = document.querySelectorAll("[data-reveal]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.14 }
+    );
+
+    window.addEventListener("pointermove", moveGlow);
+    revealTargets.forEach((target) => observer.observe(target));
 
     return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-      previousActiveElement?.focus();
+      window.removeEventListener("pointermove", moveGlow);
+      observer.disconnect();
     };
-  }, [isCafeMenuOpen]);
+  }, []);
 
-  const heroImage = useMemo(() => roomShowcase[2].images[activePhoto % roomShowcase[2].images.length], [activePhoto]);
+  async function handleOrderSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setOrderStatus("sending");
+    setOrderMessage("Submitting your order...");
+
+    const form = event.currentTarget;
+    const payload = Object.fromEntries(new FormData(form).entries());
+
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const result = (await response.json()) as { message?: string };
+
+      if (!response.ok) {
+        throw new Error(result.message || "Order could not be submitted.");
+      }
+
+      setOrderStatus("success");
+      setOrderMessage(result.message || "Order received. Confirmation email sent.");
+      form.reset();
+    } catch (error) {
+      setOrderStatus("error");
+      setOrderMessage(error instanceof Error ? error.message : "Order could not be submitted.");
+    }
+  }
 
   return (
-    <main className="apartment-site luxury-site">
-      <header className={`site-header luxury-nav ${isScrolled ? "is-scrolled" : ""}`}>
-        <Link className="brand" href="/">
-          <span className="brand-mark">JK</span>
-          <span>Jikmis Apartment</span>
-        </Link>
+    <main className="portfolio-shell">
+      <div className="cursor-glow" aria-hidden="true" />
+
+      <header className="site-header">
+        <a className="brand" href="#top" aria-label="TsewangBistaX home">
+          <Image src="/images/tsewangbistax-logo.png" alt="TsewangBistaX logo" width={86} height={44} priority />
+          <span>TsewangBistaX</span>
+        </a>
         <nav aria-label="Main navigation">
-          <a href="#about">About</a>
-          <a href="#rooms">Rooms</a>
-          <a href="#cafe">Café</a>
-          <a href="#amenities">Amenities</a>
-          <a href="#nearby">Nearby</a>
-          <a href="#gallery">Gallery</a>
-          <a href="#contact">Book</a>
+          {navItems.map((item) => (
+            <a key={item} href={`#${item.toLowerCase()}`}>
+              {item}
+            </a>
+          ))}
         </nav>
+        <a className="nav-cta" href="#contact">
+          <Mail size={16} />
+          Contact
+        </a>
       </header>
 
-      <section className="luxury-hero">
-        <img className="luxury-hero-image" src={heroImage} alt="Luxury serviced apartment at Jikmis Apartment" />
-        <div className="luxury-hero-overlay" />
-        <div className="luxury-hero-content">
-          <p className="eyebrow"><MapPin size={16} /> Boudha, Kathmandu</p>
-          <h1>Jikmis Apartment near Boudhanath.</h1>
-          <p>
-            Serviced studios and family apartments with warm interiors, private kitchens, hot water, and direct booking
-            assistance in the heart of Boudha.
+      <section id="top" className="hero section-shell">
+        <div className="hero-copy" data-reveal>
+          <p className="eyebrow">Hello, I&apos;m</p>
+          <h1>
+            Tsewang
+            <span>Bista.</span>
+          </h1>
+          <p className="hero-role">Senior-spirited developer, AI marketer & multi-business entrepreneur.</p>
+          <p className="hero-text">
+            I build premium digital experiences, practical growth systems, and business ventures across technology,
+            AI marketing, shoes, Mustang apples, and hospitality.
           </p>
           <div className="hero-actions">
-            <a className="button primary" href="https://wa.me/9779708538395" target="_blank" rel="noreferrer">
-              <MessageCircle size={18} /> Book on WhatsApp
+            <a className="button primary" href="#work">
+              View My Work
+              <ArrowUpRight size={18} />
             </a>
-            <a className="button secondary hero-secondary" href="#rooms">
-              Explore rooms
+            <a className="button secondary" href="https://wa.me/9779862568506" target="_blank" rel="noreferrer">
+              WhatsApp
+              <MessageCircle size={18} />
             </a>
           </div>
-        </div>
-        <div className="hero-booking-card">
-          <span>From</span>
-          <strong>NPR 1,500</strong>
-          <p>Daily stays and monthly rentals available.</p>
-        </div>
-      </section>
-
-      <section className="section-shell luxury-about" id="about">
-        <div>
-          <p className="eyebrow">About Jikmis</p>
-          <h2>A quiet serviced apartment designed for comfort in Boudha.</h2>
-        </div>
-        <div className="about-copy">
-          <p>
-            Jikmis Apartment offers fully furnished serviced apartments for short stays, long stays, families,
-            students, and guests who want a calm base near Boudhanath Stupa.
-          </p>
-          <div className="about-stat-row">
-            <span><BedDouble size={18} /> Studio & family rooms</span>
-            <span><Bath size={18} /> 24/7 hot water</span>
-            <span><HeartHandshake size={18} /> Direct booking help</span>
+          <div className="availability">
+            <span />
+            Available for clients, partners, investors, and opportunities
           </div>
         </div>
-      </section>
 
-      <section className="section-shell" id="rooms">
-        <div className="section-heading centered-heading">
-          <p className="eyebrow">Apartment Showcase</p>
-          <h2>Choose your space in Boudha.</h2>
-          <p>Clean, warm, and practical rooms with premium simplicity and direct monthly pricing.</p>
-        </div>
-        <div className="luxury-room-grid">
-          {roomShowcase.map((room, index) => {
-            const image = room.images[activePhoto % room.images.length];
-            return (
-              <article className="luxury-room-card" key={room.title}>
-                <div className="room-image-frame">
-                  <img src={image} alt={`${room.title} at Jikmis Apartment`} />
-                  <span className="room-chip">{room.guests}</span>
-                </div>
-                <div className="luxury-room-body">
-                  <div className="room-title-row">
-                    <h3>{room.title}</h3>
-                    <span>{index === 2 ? "Family" : "Studio"}</span>
-                  </div>
-                  <p>{room.description}</p>
-                  <div className="room-price-row">
-                    <strong>{room.price}</strong>
-                    <span>{room.monthly}</span>
-                  </div>
-                  <ul className="room-amenity-list">
-                    {room.amenities.map((amenity) => (
-                      <li key={amenity}><Check size={15} /> {amenity}</li>
-                    ))}
-                  </ul>
-                  <a className="text-link room-detail-link" href="#contact">View Details</a>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="section-shell cafe-section" id="cafe">
-        <div className="cafe-grid">
-          <div className="cafe-media">
-            <div className="cafe-main-frame">
-              <img src={cafeImages[0].src} alt={cafeImages[0].alt} loading="lazy" />
-            </div>
-            <div className="cafe-photo-strip" aria-label="Jikmis Café photo preview">
-              {cafeImages.slice(1).map((image) => (
-                <div className="cafe-thumb" key={image.src}>
-                  <img src={image.src} alt={image.alt} loading="lazy" />
-                </div>
-              ))}
-            </div>
+        <div className="hero-visual" data-reveal>
+          <div className="portrait-halo" />
+          <div className="portrait-card">
+            <Image
+              src="/images/tsewang-bista-profile.jpeg"
+              alt="Portrait of Tsewang Bista"
+              width={900}
+              height={1180}
+              className="portrait"
+              priority
+            />
           </div>
-
-          <div className="cafe-content">
-            <div className="cafe-topline">
-              <p className="eyebrow"><Coffee size={16} /> Jikmis Café</p>
-              <span className="cafe-badge">Open Daily</span>
-            </div>
-            <h2>☕ Jikmis Café</h2>
-            <p className="cafe-subtitle">Fresh Coffee • Cold Drinks • Bakery Items</p>
-            <p>
-              Take a break and enjoy freshly brewed coffee, refreshing cold drinks, and fresh bakery items at Jikmis
-              Café. Whether you are starting your morning, working remotely, or relaxing after exploring Boudha, our
-              cozy café offers a warm and peaceful atmosphere for every guest.
-            </p>
-
-            <div className="cafe-menu-card">
-              <span>Popular Menu</span>
-              <div className="cafe-popular-list">
-                {popularCafeMenu.map((item) => (
-                  <span key={item}>{item}</span>
-                ))}
+          <div className="floating-stats glass-card">
+            {metrics.map(([value, label]) => (
+              <div key={label}>
+                <strong>{value}</strong>
+                <span>{label}</span>
               </div>
-            </div>
-
-            <div className="cafe-footer-row">
-              <strong>Available for Apartment Guests & Visitors</strong>
-              <button className="button primary" type="button" onClick={() => setIsCafeMenuOpen(true)}>
-                View Full Menu
-              </button>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="section-band luxury-band" id="amenities">
-        <div className="section-shell">
-          <div className="section-heading centered-heading">
-            <p className="eyebrow">Amenities</p>
-            <h2>Everything needed for an easy stay.</h2>
-          </div>
-          <div className="facility-grid">
-            {amenities.map((item) => {
-              const Icon = item.icon;
-              return (
-                <article className="facility-card premium-card" key={item.title}>
-                  <Icon size={24} />
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
-                </article>
-              );
-            })}
-          </div>
+      <section id="about" className="section-shell about-grid">
+        <div data-reveal>
+          <p className="eyebrow">About Me</p>
+          <h2>I turn ambition into digital products, growth systems, and real business momentum.</h2>
+          <p>
+            I am based in Kathmandu, Nepal and rooted in Mustang. My work connects modern software, AI marketing,
+            design, sales, hospitality, and entrepreneurship into one practical personal brand.
+          </p>
+        </div>
+        <div className="about-cards" data-reveal>
+          <article className="glass-card about-card">
+            <Globe2 size={24} />
+            <strong>Kathmandu, Nepal</strong>
+            <span>Mustang origin with a global digital mindset.</span>
+          </article>
+          <article className="glass-card about-card">
+            <TrendingUp size={24} />
+            <strong>Business Builder</strong>
+            <span>Sales, e-commerce, operations, and customer growth.</span>
+          </article>
+          <article className="glass-card about-card">
+            <Sparkles size={24} />
+            <strong>AI + Creativity</strong>
+            <span>Marketing systems, content workflows, and automation.</span>
+          </article>
         </div>
       </section>
 
-      <section className="section-shell nearby-section" id="nearby">
-        <div className="section-heading">
-          <p className="eyebrow">Nearby Attractions</p>
-          <h2>Stay close to the best of Boudha.</h2>
-          <p>Walk to the stupa, find cafes easily, and keep airport access simple.</p>
+      <section id="skills" className="section-shell skills-section">
+        <div className="section-heading" data-reveal>
+          <p className="eyebrow">Core Stack</p>
+          <h2>Skills built for modern execution.</h2>
         </div>
-        <div className="nearby-grid">
-          {attractions.map((item) => {
-            const Icon = item.icon;
-            return (
-              <article className="nearby-card" key={item.title}>
-                <Icon size={22} />
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
+        <div className="skill-cloud" data-reveal>
+          {skills.map((skill) => (
+            <span key={skill}>{skill}</span>
+          ))}
+        </div>
+      </section>
+
+      <section id="work" className="section-shell work-layout">
+        <div className="services-panel glass-card" data-reveal>
+          <p className="eyebrow">What I Do</p>
+          <h2>Services</h2>
+          <div className="service-list">
+            {services.map(({ icon: Icon, title, body }) => (
+              <article key={title}>
+                <Icon size={20} />
+                <div>
+                  <h3>{title}</h3>
+                  <p>{body}</p>
+                </div>
+                <ArrowUpRight size={18} />
               </article>
-            );
-          })}
+            ))}
+          </div>
+        </div>
+        <div className="portfolio-panel glass-card" data-reveal>
+          <p className="eyebrow">Selected Work</p>
+          <h2>Featured Projects</h2>
+          <div className="portfolio-grid">
+            {portfolio.map((item) => (
+              <article className="portfolio-card" key={item.title}>
+                <div className="project-art">
+                  <span>{item.type}</span>
+                </div>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="section-shell review-section">
-        <div className="section-heading centered-heading">
-          <p className="eyebrow">Guest Reviews</p>
-          <h2>Warm stays, simple bookings, trusted comfort.</h2>
+      <section className="section-shell venture-section">
+        <div className="section-heading" data-reveal>
+          <p className="eyebrow">Business Ventures</p>
+          <h2>Technology meets real-world business.</h2>
         </div>
-        <div className="review-grid">
-          {reviews.map((review) => (
-            <article className="review-card" key={review.name}>
-              <div className="star-row">{[1, 2, 3, 4, 5].map((star) => <Star key={star} size={16} fill="currentColor" />)}</div>
-              <p>{review.quote}</p>
-              <strong>{review.name}</strong>
+        <div className="venture-grid">
+          {ventures.map(({ icon: Icon, title, tag, body }) => (
+            <article className="glass-card venture-card" key={title} data-reveal>
+              <Icon size={28} />
+              <span>{tag}</span>
+              <h3>{title}</h3>
+              <p>{body}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="section-shell" id="gallery">
-        <div className="section-heading centered-heading">
-          <p className="eyebrow">Gallery</p>
-          <h2>Real rooms, real warmth.</h2>
+      <section id="services" className="section-shell experience-section">
+        <div data-reveal>
+          <p className="eyebrow">Experience</p>
+          <h2>Professional range with hands-on execution.</h2>
         </div>
-        <div className="luxury-gallery">
-          {galleryImages.map((image, index) => (
-            <img key={image} src={image} alt={`Jikmis Apartment gallery image ${index + 1}`} />
+        <div className="experience-list glass-card" data-reveal>
+          {experiences.map((item) => (
+            <div key={item}>
+              <CheckCircle2 size={20} />
+              <span>{item}</span>
+            </div>
           ))}
         </div>
       </section>
 
-      <section className="contact-section luxury-contact" id="contact">
-        <div>
-          <p className="eyebrow">Direct Booking</p>
-          <h2>Ready to check availability?</h2>
+      <section className="section-shell testimonial-section">
+        <div className="section-heading" data-reveal>
+          <p className="eyebrow">Testimonials</p>
+          <h2>Trusted for sharp thinking and reliable execution.</h2>
+        </div>
+        <div className="testimonial-grid">
+          {testimonials.map((testimonial) => (
+            <article className="glass-card testimonial-card" key={testimonial.name} data-reveal>
+              <div className="stars">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star key={star} size={16} fill="currentColor" />
+                ))}
+              </div>
+              <p>&quot;{testimonial.quote}&quot;</p>
+              <strong>{testimonial.name}</strong>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="orders" className="section-shell order-section">
+        <div className="section-heading" data-reveal>
+          <p className="eyebrow">Order Inquiry</p>
+          <h2>Place a shoe, apple, or business inquiry order.</h2>
           <p>
-            Share your dates, apartment type, number of guests, and preferred contact method. Our AI assistant and team
-            can help guide the next step.
+            Orders are designed to go to Google Sheets, notify me by email, and send the customer an order received
+            confirmation when valid environment credentials are configured.
           </p>
         </div>
-        <div className="contact-actions">
-          <a className="button primary" href="https://wa.me/9779708538395" target="_blank" rel="noreferrer">
-            <MessageCircle size={18} /> WhatsApp +9779708538395
-          </a>
-          <a className="button secondary" href="tel:+9779708538395">
-            <Phone size={18} /> Call +9779708538395
-          </a>
-        </div>
+        <form className="glass-card order-form" onSubmit={handleOrderSubmit} data-reveal>
+          <div className="form-grid">
+            <label>
+              Customer Name
+              <input name="customerName" type="text" placeholder="Full name" required />
+            </label>
+            <label>
+              Customer Email
+              <input name="customerEmail" type="email" placeholder="customer@example.com" required />
+            </label>
+            <label>
+              Phone / WhatsApp
+              <input name="customerPhone" type="tel" placeholder="+977..." required />
+            </label>
+            <label>
+              Order Type
+              <select name="orderType" required defaultValue="">
+                <option value="" disabled>
+                  Select order type
+                </option>
+                <option value="Shoe Order">Shoe Order</option>
+                <option value="Mustang Apple Order">Mustang Apple Order</option>
+                <option value="B2B / Wholesale Inquiry">B2B / Wholesale Inquiry</option>
+                <option value="AI Marketing / Website Inquiry">AI Marketing / Website Inquiry</option>
+                <option value="Other Business Inquiry">Other Business Inquiry</option>
+              </select>
+            </label>
+            <label>
+              Product / Service
+              <input name="product" type="text" placeholder="Shoes, apples, website, ads..." required />
+            </label>
+            <label>
+              Quantity / Budget
+              <input name="quantity" type="text" placeholder="Example: 10 pairs or NPR 50,000" required />
+            </label>
+          </div>
+          <label>
+            Delivery Address / Notes
+            <textarea name="notes" placeholder="Delivery address, size, product details, deadline, or notes" rows={5} required />
+          </label>
+          <button className="button primary" type="submit" disabled={orderStatus === "sending"}>
+            <PackageCheck size={18} />
+            {orderStatus === "sending" ? "Submitting..." : "Submit Order"}
+          </button>
+          {orderMessage ? (
+            <p className={`form-status ${orderStatus === "error" ? "error" : "success"}`} role="status">
+              {orderMessage}
+            </p>
+          ) : null}
+        </form>
       </section>
 
-      <section className="section-shell map-section" id="map">
-        <div className="section-heading centered-heading">
-          <p className="eyebrow">Find Us</p>
-          <h2>Jikmis Apartment near Boudhanath.</h2>
-          <p>Open the map for directions to our serviced apartments in Boudha, Kathmandu.</p>
+      <section id="contact" className="section-shell contact-section">
+        <div data-reveal>
+          <p className="eyebrow">Contact Me</p>
+          <h2>Let&apos;s build something premium together.</h2>
+          <p>
+            Available for web development, UI/UX design, AI marketing, business partnerships, and serious growth
+            conversations.
+          </p>
         </div>
-        <div className="map-card">
-          <iframe
-            title="Jikmis Apartment Google Map"
-            src="https://www.google.com/maps?q=Jikmis%20Apartment%20Boudha%20Kathmandu&output=embed"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-          <a className="button primary map-button" href="https://maps.app.goo.gl/aRgUNak3RATee21c8" target="_blank" rel="noreferrer">
-            <MapPin size={18} /> Open Google Maps
+        <div className="contact-card glass-card" data-reveal>
+          <a href="mailto:tsewangbistaimp@gmail.com">
+            <Mail size={18} />
+            tsewangbistaimp@gmail.com
           </a>
-        </div>
-      </section>
-
-      <footer className="site-footer luxury-footer">
-        <span><Building2 size={16} /> Jikmis Apartment</span>
-        <span><Users size={16} /> Serviced apartments in Boudha</span>
-      </footer>
-
-      {isCafeMenuOpen && (
-        <div className="cafe-modal-backdrop" role="presentation" onClick={() => setIsCafeMenuOpen(false)}>
-          <div
-            className="cafe-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="cafe-menu-title"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              className="cafe-modal-close"
-              type="button"
-              aria-label="Close Jikmis Café menu"
-              onClick={() => setIsCafeMenuOpen(false)}
-            >
-              <X size={18} />
-            </button>
-            <p className="eyebrow"><Coffee size={16} /> Open Daily</p>
-            <h2 id="cafe-menu-title">Jikmis Café Menu</h2>
-            <div className="cafe-menu-grid">
-              {cafeMenu.map((group) => (
-                <section className="cafe-menu-group" key={group.category}>
-                  <h3>{group.category}</h3>
-                  <ul>
-                    {group.items.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </section>
-              ))}
-            </div>
+          <a href="https://wa.me/9779862568506" target="_blank" rel="noreferrer">
+            <MessageCircle size={18} />
+            +977 9862568506
+          </a>
+          <span>
+            <MapPin size={18} />
+            Kathmandu, Nepal
+          </span>
+          <div className="social-row">
+            {socials.map(({ label, href, icon: Icon }) => (
+              <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label}>
+                <Icon size={20} />
+              </a>
+            ))}
           </div>
         </div>
-      )}
+      </section>
 
-      <ApartmentChatbot />
+      <footer className="site-footer">
+        <span>TsewangBistaX</span>
+        <p>Technology, Business & Innovation.</p>
+        <a href="#top" aria-label="Back to top">
+          <ArrowUpRight size={18} />
+        </a>
+      </footer>
     </main>
   );
 }
