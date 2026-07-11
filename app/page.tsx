@@ -9,12 +9,17 @@ import {
   Car,
   Check,
   ChefHat,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
   Coffee,
+  Heart,
   HeartHandshake,
   MapPin,
   MessageCircle,
   Phone,
   Plane,
+  Search,
   ShieldCheck,
   Sparkles,
   Star,
@@ -256,29 +261,78 @@ export default function Home() {
         </nav>
       </header>
 
-      <section className="luxury-hero">
+      <section className="luxury-hero airbnb-hero">
         <img className="luxury-hero-image" src={heroImage} alt="Luxury serviced apartment at Jikmis Apartment" />
-        <div className="luxury-hero-overlay" />
-        <div className="luxury-hero-content">
+        <div className="luxury-hero-overlay airbnb-hero-overlay" />
+
+        <div className="airbnb-topbar">
+          <div className="airbnb-searchbar">
+            <div className="search-field">
+              <span>Room Type</span>
+              <strong>{roomShowcase[activePhoto % roomShowcase.length].title}</strong>
+            </div>
+            <div className="search-field">
+              <span>Check in</span>
+              <strong>Add dates</strong>
+            </div>
+            <div className="search-field">
+              <span>Check out</span>
+              <strong>Add dates</strong>
+            </div>
+            <div className="search-field">
+              <span>Guests</span>
+              <strong>Add guests</strong>
+            </div>
+            <a className="search-button" href="#rooms" aria-label="Search available rooms">
+              <Search size={20} />
+            </a>
+          </div>
+        </div>
+
+        <div className="luxury-hero-content airbnb-hero-content">
           <p className="eyebrow"><MapPin size={16} /> Boudha, Kathmandu</p>
-          <h1>Jikmis Apartment near Boudhanath.</h1>
+          <h1>Jikmis Apartment.</h1>
           <p>
             Serviced studios and family apartments with warm interiors, private kitchens, hot water, and direct booking
             assistance in the heart of Boudha.
           </p>
-          <div className="hero-actions">
-            <a className="button primary" href="https://wa.me/9779708538395" target="_blank" rel="noreferrer">
-              <MessageCircle size={18} /> Book on WhatsApp
+          <div className="hero-actions airbnb-hero-actions">
+            <a className="button airbnb-explore" href="#rooms">
+              Explore <ArrowRight size={18} />
             </a>
-            <a className="button secondary hero-secondary" href="#rooms">
-              Explore rooms
+            <a className="button secondary hero-secondary" href="https://wa.me/9779708538395" target="_blank" rel="noreferrer">
+              <MessageCircle size={18} /> WhatsApp
             </a>
           </div>
         </div>
-        <div className="hero-booking-card">
-          <span>From</span>
-          <strong>NPR 1,500</strong>
-          <p>Daily stays and monthly rentals available.</p>
+
+        <div className="airbnb-card-row" aria-label="Featured room types">
+          {roomShowcase.map((room, index) => (
+            <div className="airbnb-card" key={room.title}>
+              <div className="airbnb-card-media">
+                <img src={room.images[activePhoto % room.images.length]} alt={`${room.title} at Jikmis Apartment`} />
+                {index < 2 ? <Heart size={16} className="airbnb-card-heart" /> : null}
+              </div>
+              <span className="airbnb-card-caption">{room.title}, Boudha</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="airbnb-hero-footer">
+          <span className="airbnb-location"><MapPin size={16} /> Boudha, Kathmandu, Nepal</span>
+          <div className="airbnb-dots">
+            {roomShowcase.map((room, index) => (
+              <span key={room.title} className={index === activePhoto % roomShowcase.length ? "is-active" : ""} />
+            ))}
+          </div>
+          <div className="airbnb-arrows">
+            <button type="button" aria-label="Previous room">
+              <ChevronLeft size={18} />
+            </button>
+            <button type="button" aria-label="Next room">
+              <ChevronRight size={18} />
+            </button>
+          </div>
         </div>
       </section>
 
