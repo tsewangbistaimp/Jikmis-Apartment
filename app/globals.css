@@ -377,6 +377,26 @@ textarea { resize: vertical; }
   width: 100%;
 }
 
+.date-field {
+  display: block;
+  position: relative;
+}
+
+.date-field-icon {
+  color: var(--muted);
+  left: 14px;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.date-field input[type="date"] {
+  min-height: 46px;
+  padding-left: 40px;
+}
+
 .booking-panel select:focus,
 .booking-panel input:focus {
   border-color: var(--accent);
@@ -2227,6 +2247,7 @@ textarea { resize: vertical; }
   .airbnb-search-status { margin: 0 0 18px; position: static; transform: none; width: fit-content; }
   .form-grid-2 { grid-template-columns: 1fr; }
   .booking-modal { max-width: 100%; }
+  .booking-modal h2 { font-size: clamp(1.5rem, 7vw, 1.9rem); line-height: 1.15; }
   .airbnb-hero-content { max-width: 100%; position: static; margin-bottom: 22px; }
   .airbnb-card-row {
     overflow-x: auto;
@@ -2315,7 +2336,7 @@ textarea { resize: vertical; }
 
 @media (prefers-color-scheme: dark) {
   .cafe-content,
-  .cafe-modal,
+  .cafe-modal:not(.booking-modal),
   .cafe-menu-card,
   .cafe-menu-group {
     background: rgba(16, 27, 52, 0.92);
@@ -2324,7 +2345,7 @@ textarea { resize: vertical; }
   }
 
   .cafe-content h2,
-  .cafe-modal h2,
+  .cafe-modal:not(.booking-modal) h2,
   .cafe-footer-row strong,
   .cafe-menu-card > span {
     color: #fbfcfe;

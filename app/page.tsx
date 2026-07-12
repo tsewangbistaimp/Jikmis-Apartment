@@ -7,6 +7,7 @@ import {
   BedDouble,
   Bot,
   Building2,
+  Calendar,
   Camera,
   Car,
   Check,
@@ -823,21 +824,27 @@ export default function Home() {
             </label>
             <label>
               Check in
-              <input
-                type="date"
-                value={bookingForm.checkIn}
-                onChange={(event) => setBookingForm((current) => ({ ...current, checkIn: event.target.value }))}
-                required
-              />
+              <span className="date-field">
+                <Calendar size={16} className="date-field-icon" aria-hidden="true" />
+                <input
+                  type="date"
+                  value={bookingForm.checkIn}
+                  onChange={(event) => setBookingForm((current) => ({ ...current, checkIn: event.target.value }))}
+                  required
+                />
+              </span>
             </label>
             <label>
               Check out
-              <input
-                type="date"
-                value={bookingForm.checkOut}
-                onChange={(event) => setBookingForm((current) => ({ ...current, checkOut: event.target.value }))}
-                required
-              />
+              <span className="date-field">
+                <Calendar size={16} className="date-field-icon" aria-hidden="true" />
+                <input
+                  type="date"
+                  value={bookingForm.checkOut}
+                  onChange={(event) => setBookingForm((current) => ({ ...current, checkOut: event.target.value }))}
+                  required
+                />
+              </span>
             </label>
           </div>
           {nightsPreview > 0 ? (
@@ -996,21 +1003,27 @@ export default function Home() {
                 </label>
                 <label>
                   Check in
-                  <input
-                    type="date"
-                    value={bookingForm.checkIn}
-                    onChange={(event) => setBookingForm((current) => ({ ...current, checkIn: event.target.value }))}
-                    required
-                  />
+                  <span className="date-field">
+                    <Calendar size={16} className="date-field-icon" aria-hidden="true" />
+                    <input
+                      type="date"
+                      value={bookingForm.checkIn}
+                      onChange={(event) => setBookingForm((current) => ({ ...current, checkIn: event.target.value }))}
+                      required
+                    />
+                  </span>
                 </label>
                 <label>
                   Check out
-                  <input
-                    type="date"
-                    value={bookingForm.checkOut}
-                    onChange={(event) => setBookingForm((current) => ({ ...current, checkOut: event.target.value }))}
-                    required
-                  />
+                  <span className="date-field">
+                    <Calendar size={16} className="date-field-icon" aria-hidden="true" />
+                    <input
+                      type="date"
+                      value={bookingForm.checkOut}
+                      onChange={(event) => setBookingForm((current) => ({ ...current, checkOut: event.target.value }))}
+                      required
+                    />
+                  </span>
                 </label>
               </div>
               {nightsPreview > 0 ? (
