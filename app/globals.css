@@ -2157,7 +2157,12 @@ textarea { resize: vertical; }
   .luxury-hero { min-height: auto; padding: 128px 16px 34px; }
   .luxury-hero-content h1 { font-size: clamp(2.2rem, 12vw, 3.35rem); line-height: 1.02; }
   .luxury-hero-content p:not(.eyebrow) { font-size: 0.95rem; line-height: 1.62; }
-  .airbnb-hero { padding: 118px 16px 24px; }
+  .luxury-hero-image {
+    background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+    object-fit: contain;
+    transform: none;
+  }
+  .airbnb-hero { min-height: 60vh; padding: 118px 16px 24px; }
   .airbnb-topbar { margin-top: 34px; position: static; padding: 0 0 22px; }
   .airbnb-searchbar { border-radius: 18px; flex-wrap: wrap; padding: 14px; }
   .search-field { border-right: 0; flex: 1 1 42%; padding: 8px 6px; }
