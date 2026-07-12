@@ -14,7 +14,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Coffee,
-  Heart,
   HeartHandshake,
   Home as HomeIcon,
   MapPin,
@@ -25,7 +24,6 @@ import {
   Send,
   ShieldCheck,
   Sparkles,
-  Star,
   Users,
   Wifi,
   X
@@ -104,21 +102,6 @@ const attractions = [
   { icon: Coffee, title: "Cafes & Restaurants", text: "Easy access to local cafes, shops, and dining." },
   { icon: Plane, title: "Airport Access", text: "Convenient route to Tribhuvan International Airport." },
   { icon: Building2, title: "Daily Essentials", text: "Public transport, markets, and daily needs nearby." }
-];
-
-const reviews = [
-  {
-    quote: "The room was peaceful, clean, and close to Boudha. Perfect for a longer Kathmandu stay.",
-    name: "Guest from Nepal"
-  },
-  {
-    quote: "Loved the warm wooden rooms and kitchen setup. The location made everything simple.",
-    name: "Monthly guest"
-  },
-  {
-    quote: "A comfortable family space with helpful contact and easy access to restaurants.",
-    name: "Family traveler"
-  }
 ];
 
 const galleryImages = [
@@ -217,6 +200,7 @@ export default function Home() {
   const [contactDetails, setContactDetails] = useState({ name: "", email: "", phone: "" });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [lightbox, setLightbox] = useState<{ images: string[]; title: string; index: number } | null>(null);
+  const [activeMobileTab, setActiveMobileTab] = useState("about");
 
   useEffect(() => {
     const updateScrollState = () => setIsScrolled(window.scrollY > 24);
@@ -247,6 +231,29 @@ export default function Home() {
     );
 
     revealElements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const sectionIds = ["about", "rooms", "cafe", "contact"];
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((element): element is HTMLElement => element !== null);
+
+    if (sections.length === 0 || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveMobileTab(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+    );
+
+    sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, []);
 
@@ -448,6 +455,9 @@ export default function Home() {
     }
   }
 
+  const mobileTabOrder = ["about", "rooms", "cafe", "contact", "menu"];
+  const activeMobileTabKey = isMobileMenuOpen ? "menu" : activeMobileTab;
+
   return (
     <main className="apartment-site luxury-site">
       <header className={`site-header luxury-nav ${isScrolled ? "is-scrolled" : ""}`}>
@@ -484,40 +494,8 @@ export default function Home() {
           </p>
           <div className="hero-actions airbnb-hero-actions">
             <a className="button airbnb-explore" href="#rooms">
-              Explore <ArrowRight size={18} />
+              Explore Rooms <ArrowRight size={18} />
             </a>
-            <a className="button secondary hero-secondary" href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer">
-              <MessageCircle size={18} /> WhatsApp
-            </a>
-          </div>
-        </div>
-
-        <div className="airbnb-card-row" aria-label="Featured room types">
-          {roomShowcase.map((room, index) => (
-            <div className="airbnb-card" key={room.title}>
-              <div className="airbnb-card-media">
-                <img src={room.images[activePhoto % room.images.length]} alt={`${room.title} at Jikmis Apartment`} />
-                {index < 2 ? <Heart size={16} className="airbnb-card-heart" /> : null}
-              </div>
-              <span className="airbnb-card-caption">{room.title}, Boudha</span>
-            </div>
-          ))}
-        </div>
-
-        <div className="airbnb-hero-footer">
-          <span className="airbnb-location"><MapPin size={16} /> Boudha, Kathmandu, Nepal</span>
-          <div className="airbnb-dots">
-            {roomShowcase.map((room, index) => (
-              <span key={room.title} className={index === activePhoto % roomShowcase.length ? "is-active" : ""} />
-            ))}
-          </div>
-          <div className="airbnb-arrows">
-            <button type="button" aria-label="Previous room">
-              <ChevronLeft size={18} />
-            </button>
-            <button type="button" aria-label="Next room">
-              <ChevronRight size={18} />
-            </button>
           </div>
         </div>
       </section>
@@ -784,26 +762,6 @@ export default function Home() {
               </article>
             );
           })}
-        </div>
-      </section>
-
-      <section className="section-shell review-section reveal">
-        <div className="section-heading centered-heading">
-          <p className="eyebrow">Guest Reviews</p>
-          <h2>Warm stays, simple bookings, trusted comfort.</h2>
-        </div>
-        <div className="review-grid">
-          {reviews.map((review, index) => (
-            <article
-              className="review-card reveal"
-              key={review.name}
-              style={{ transitionDelay: `${index * 90}ms` }}
-            >
-              <div className="star-row">{[1, 2, 3, 4, 5].map((star) => <Star key={star} size={16} fill="currentColor" />)}</div>
-              <p>{review.quote}</p>
-              <strong>{review.name}</strong>
-            </article>
-          ))}
         </div>
       </section>
 
@@ -1170,19 +1128,52 @@ export default function Home() {
       ) : null}
 
       <nav className="mobile-tab-bar" aria-label="Mobile section navigation">
-        <a href="#about" className="mobile-tab-item" onClick={() => setIsMobileMenuOpen(false)}>
+        <span
+          className="mobile-tab-indicator"
+          style={{ transform: `translateX(${mobileTabOrder.indexOf(activeMobileTabKey) * 100}%)` }}
+          aria-hidden="true"
+        />
+        <a
+          href="#about"
+          className={`mobile-tab-item ${activeMobileTabKey === "about" ? "is-active" : ""}`}
+          onClick={() => {
+            setActiveMobileTab("about");
+            setIsMobileMenuOpen(false);
+          }}
+        >
           <HomeIcon size={20} />
           <span>About</span>
         </a>
-        <a href="#rooms" className="mobile-tab-item" onClick={() => setIsMobileMenuOpen(false)}>
+        <a
+          href="#rooms"
+          className={`mobile-tab-item ${activeMobileTabKey === "rooms" ? "is-active" : ""}`}
+          onClick={() => {
+            setActiveMobileTab("rooms");
+            setIsMobileMenuOpen(false);
+          }}
+        >
           <BedDouble size={20} />
           <span>Rooms</span>
         </a>
-        <a href="#cafe" className="mobile-tab-item" onClick={() => setIsMobileMenuOpen(false)}>
+        <a
+          href="#cafe"
+          className={`mobile-tab-item ${activeMobileTabKey === "cafe" ? "is-active" : ""}`}
+          onClick={() => {
+            setActiveMobileTab("cafe");
+            setIsMobileMenuOpen(false);
+          }}
+        >
           <Coffee size={20} />
           <span>Café</span>
         </a>
-        <a href="#contact" className="mobile-tab-item" onClick={() => setIsMobileMenuOpen(false)}>
+        <a
+          href="#contact"
+          className={`mobile-tab-item ${activeMobileTabKey === "contact" ? "is-active" : ""}`}
+          onClick={() => {
+            setActiveMobileTab("contact");
+            setIsMobileMenuOpen(false);
+          }}
+        >
           <MessageCircle size={20} />
           <span>Contact</span>
         </a>
