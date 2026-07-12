@@ -1385,7 +1385,7 @@ textarea { resize: vertical; }
 }
 
 .video-card {
-  aspect-ratio: 9 / 14;
+  aspect-ratio: 4 / 3;
   border-radius: 20px;
   box-shadow: 0 26px 64px rgba(6, 12, 28, 0.22);
   overflow: hidden;
@@ -1395,6 +1395,7 @@ textarea { resize: vertical; }
 .video-card video {
   height: 100%;
   object-fit: cover;
+  object-position: center;
   width: 100%;
 }
 
@@ -2233,9 +2234,9 @@ textarea { resize: vertical; }
   }
   .video-showcase-grid::-webkit-scrollbar { display: none; }
   .video-card {
-    aspect-ratio: 9 / 16;
-    flex: 0 0 82vw;
-    height: min(74vh, 640px);
+    aspect-ratio: 4 / 3;
+    flex: 0 0 86vw;
+    height: auto;
     scroll-snap-align: start;
     width: auto;
   }

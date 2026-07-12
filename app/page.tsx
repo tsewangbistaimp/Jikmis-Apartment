@@ -35,17 +35,20 @@ const apartmentVideos = [
   {
     src: "/videos/jikmis-apartment-tour-1.mp4",
     poster: "/images/jikmis/single-studio-bedroom.jpeg",
-    title: "Single Studio"
+    title: "Family / 2BHK",
+    roomTitle: "Family Room"
   },
   {
     src: "/videos/jikmis-apartment-tour-2.mp4",
     poster: "/images/jikmis/double-studio-lounge.jpeg",
-    title: "Double Studio"
+    title: "Single Studio",
+    roomTitle: "Single Studio"
   },
   {
     src: "/videos/jikmis-apartment-tour-3.mp4",
     poster: "/images/jikmis/family-room-living.jpeg",
-    title: "Family Room"
+    title: "Double Studio",
+    roomTitle: "Double Studio"
   }
 ];
 
@@ -596,7 +599,7 @@ export default function Home() {
               <button
                 type="button"
                 className="video-card-book-button"
-                onClick={() => scrollToBookingForm(video.title)}
+                onClick={() => scrollToBookingForm(video.roomTitle)}
               >
                 <Send size={13} /> Book
               </button>
