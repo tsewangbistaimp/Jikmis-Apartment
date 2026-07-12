@@ -1411,6 +1411,33 @@ textarea { resize: vertical; }
   right: 0;
 }
 
+.video-card-book-button {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(6, 12, 28, 0.28);
+  color: var(--primary-dark);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 900;
+  gap: 5px;
+  padding: 7px 13px;
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  transition: background 180ms ease, transform 180ms ease;
+  z-index: 1;
+}
+
+.video-card-book-button:hover {
+  background: var(--accent);
+  color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
 .tour-photo-groups {
   display: grid;
   gap: 40px;
@@ -2195,8 +2222,23 @@ textarea { resize: vertical; }
   .section-shell { padding: 40px 16px; }
   .luxury-about { padding-top: 48px; }
   .nearby-grid, .luxury-gallery { grid-template-columns: 1fr; }
-  .video-showcase-grid { grid-template-columns: 1fr; }
-  .video-card { aspect-ratio: 16 / 10; }
+  .video-showcase-grid {
+    display: flex;
+    gap: 14px;
+    grid-template-columns: none;
+    overflow-x: auto;
+    padding: 4px 4px 10px;
+    scroll-padding-left: 4px;
+    scroll-snap-type: x mandatory;
+  }
+  .video-showcase-grid::-webkit-scrollbar { display: none; }
+  .video-card {
+    aspect-ratio: 9 / 16;
+    flex: 0 0 82vw;
+    height: min(74vh, 640px);
+    scroll-snap-align: start;
+    width: auto;
+  }
   .luxury-gallery .gallery-tile:nth-child(1), .luxury-gallery .gallery-tile:nth-child(6) { grid-column: span 1; aspect-ratio: 1 / 1; }
   .cafe-main-frame { aspect-ratio: 4 / 3.2; }
   .cafe-photo-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }

@@ -35,7 +35,7 @@ const apartmentVideos = [
   {
     src: "/videos/jikmis-apartment-tour-1.mp4",
     poster: "/images/jikmis/single-studio-bedroom.jpeg",
-    title: "Studio Living"
+    title: "Single Studio"
   },
   {
     src: "/videos/jikmis-apartment-tour-2.mp4",
@@ -593,6 +593,13 @@ export default function Home() {
                 preload="metadata"
               />
               <span className="video-card-caption">{video.title}</span>
+              <button
+                type="button"
+                className="video-card-book-button"
+                onClick={() => scrollToBookingForm(video.title)}
+              >
+                <Send size={13} /> Book
+              </button>
             </div>
           ))}
         </div>
