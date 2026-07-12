@@ -461,6 +461,7 @@ export default function Home() {
   }
 
   const mobileTabOrder = ["about", "rooms", "chat", "contact", "menu"];
+  const todayIso = new Date().toISOString().split("T")[0];
   const activeMobileTabKey = isMobileMenuOpen ? "menu" : activeMobileTab;
 
   return (
@@ -828,8 +829,16 @@ export default function Home() {
                 <Calendar size={16} className="date-field-icon" aria-hidden="true" />
                 <input
                   type="date"
+                  min={todayIso}
                   value={bookingForm.checkIn}
-                  onChange={(event) => setBookingForm((current) => ({ ...current, checkIn: event.target.value }))}
+                  onChange={(event) => {
+                    const nextCheckIn = event.target.value;
+                    setBookingForm((current) => ({
+                      ...current,
+                      checkIn: nextCheckIn,
+                      checkOut: current.checkOut && current.checkOut <= nextCheckIn ? "" : current.checkOut
+                    }));
+                  }}
                   required
                 />
               </span>
@@ -840,6 +849,7 @@ export default function Home() {
                 <Calendar size={16} className="date-field-icon" aria-hidden="true" />
                 <input
                   type="date"
+                  min={bookingForm.checkIn || todayIso}
                   value={bookingForm.checkOut}
                   onChange={(event) => setBookingForm((current) => ({ ...current, checkOut: event.target.value }))}
                   required
@@ -1007,8 +1017,16 @@ export default function Home() {
                     <Calendar size={16} className="date-field-icon" aria-hidden="true" />
                     <input
                       type="date"
+                      min={todayIso}
                       value={bookingForm.checkIn}
-                      onChange={(event) => setBookingForm((current) => ({ ...current, checkIn: event.target.value }))}
+                      onChange={(event) => {
+                        const nextCheckIn = event.target.value;
+                        setBookingForm((current) => ({
+                          ...current,
+                          checkIn: nextCheckIn,
+                          checkOut: current.checkOut && current.checkOut <= nextCheckIn ? "" : current.checkOut
+                        }));
+                      }}
                       required
                     />
                   </span>
@@ -1019,6 +1037,7 @@ export default function Home() {
                     <Calendar size={16} className="date-field-icon" aria-hidden="true" />
                     <input
                       type="date"
+                      min={bookingForm.checkIn || todayIso}
                       value={bookingForm.checkOut}
                       onChange={(event) => setBookingForm((current) => ({ ...current, checkOut: event.target.value }))}
                       required

@@ -2016,6 +2016,11 @@ textarea { resize: vertical; }
 }
 
 @media (max-width: 900px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
   .hero, .detail-grid, .booking-grid, .admin-grid { grid-template-columns: 1fr; }
   .room-grid, .stat-grid, .facility-grid, .pricing-location-grid, .about-section { grid-template-columns: 1fr 1fr; }
   .contact-section { grid-template-columns: 1fr; }
