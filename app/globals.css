@@ -2259,7 +2259,7 @@ textarea { resize: vertical; }
     padding: 4px 4px 10px;
     scroll-padding-left: 4px;
     scroll-snap-type: x mandatory;
-    touch-action: pan-x;
+    touch-action: pan-x pan-y;
   }
   .video-showcase-grid::-webkit-scrollbar { display: none; }
   .video-card {
