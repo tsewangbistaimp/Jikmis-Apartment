@@ -1385,7 +1385,7 @@ textarea { resize: vertical; }
 }
 
 .video-card {
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 9 / 16;
   border-radius: 20px;
   box-shadow: 0 26px 64px rgba(6, 12, 28, 0.22);
   overflow: hidden;
@@ -2204,26 +2204,21 @@ textarea { resize: vertical; }
   .quick-replies::-webkit-scrollbar {
     display: none;
   }
-  .luxury-hero { min-height: auto; padding: 0; }
+  .luxury-hero { min-height: 100vh; min-height: 100dvh; padding: 0; }
   .luxury-hero-content h1 { font-size: clamp(2.2rem, 12vw, 3.35rem); line-height: 1.02; }
   .luxury-hero-content p:not(.eyebrow) { font-size: 0.95rem; line-height: 1.62; }
   .luxury-hero-image {
-    height: auto;
+    height: 100%;
     object-fit: cover;
     object-position: center;
-    order: 1;
-    position: static;
+    position: absolute;
     transform: none;
     width: 100%;
   }
-  .luxury-hero-overlay { display: none; }
-  .luxury-hero { min-height: auto; }
   .airbnb-hero {
-    align-items: stretch;
-    display: flex;
-    flex-direction: column;
-    min-height: auto;
-    padding: 80px 0 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 158px 16px 34px;
   }
   .airbnb-topbar { margin-top: 34px; position: static; padding: 0 0 22px; }
   .airbnb-searchbar { border-radius: 18px; flex-wrap: wrap; padding: 14px; }
@@ -2232,16 +2227,7 @@ textarea { resize: vertical; }
   .airbnb-search-status { margin: 0 0 18px; position: static; transform: none; width: fit-content; }
   .form-grid-2 { grid-template-columns: 1fr; }
   .booking-modal { max-width: 100%; }
-  .airbnb-hero-content {
-    background: var(--primary);
-    color: white;
-    margin-bottom: 0;
-    max-width: 100%;
-    order: 2;
-    padding: 28px 20px 34px;
-    position: static;
-  }
-  .airbnb-hero-content p:not(.eyebrow) { color: rgba(255, 255, 255, 0.82); }
+  .airbnb-hero-content { max-width: 100%; position: static; margin-bottom: 22px; }
   .airbnb-card-row {
     overflow-x: auto;
     padding-bottom: 6px;
@@ -2274,9 +2260,9 @@ textarea { resize: vertical; }
   }
   .video-showcase-grid::-webkit-scrollbar { display: none; }
   .video-card {
-    aspect-ratio: 4 / 3;
-    flex: 0 0 86vw;
-    height: auto;
+    aspect-ratio: 9 / 16;
+    flex: 0 0 82vw;
+    height: min(74vh, 640px);
     scroll-snap-align: start;
     width: auto;
   }
