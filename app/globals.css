@@ -2158,9 +2158,9 @@ textarea { resize: vertical; }
   .luxury-hero-content h1 { font-size: clamp(2.2rem, 12vw, 3.35rem); line-height: 1.02; }
   .luxury-hero-content p:not(.eyebrow) { font-size: 0.95rem; line-height: 1.62; }
   .luxury-hero-image {
+    background: linear-gradient(180deg, var(--primary), var(--primary-dark));
     height: 100%;
-    object-fit: cover;
-    object-position: center 38%;
+    object-fit: contain;
     transform: none;
     width: 100%;
   }
