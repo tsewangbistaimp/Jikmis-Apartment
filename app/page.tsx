@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
   Bath,
   BedDouble,
@@ -175,10 +175,22 @@ const cafeMenu = [
   { category: "Bakery", items: ["Butter Croissant", "Cheesecake", "Chocolate Cake", "Brownie", "Fresh Bakery Items"] }
 ];
 
+const WHATSAPP_NUMBER = "9779708538395";
+const INQUIRY_EMAIL = "jikmisdonkhang@gmail.com";
+const FORMSPREE_ENDPOINT = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || "https://formspree.io/f/xvzepwkw";
+
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activePhoto, setActivePhoto] = useState(0);
   const [isCafeMenuOpen, setIsCafeMenuOpen] = useState(false);
+  const [bookingForm, setBookingForm] = useState({
+    roomType: roomShowcase[0].title,
+    checkIn: "",
+    checkOut: "",
+    guests: ""
+  });
+  const [bookingStatus, setBookingStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [bookingMessage, setBookingMessage] = useState("");
 
   useEffect(() => {
     const updateScrollState = () => setIsScrolled(window.scrollY > 24);
@@ -243,6 +255,41 @@ export default function Home() {
 
   const heroImage = useMemo(() => roomShowcase[2].images[activePhoto % roomShowcase[2].images.length], [activePhoto]);
 
+  async function handleBookingSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const { roomType, checkIn, checkOut, guests } = bookingForm;
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+      `Hello Jikmis Apartment, I would like to check availability.\nRoom type: ${roomType}\nCheck-in: ${checkIn}\nCheck-out: ${checkOut}\nGuests: ${guests}`
+    )}`;
+
+    setBookingStatus("sending");
+    setBookingMessage("Sending your request...");
+
+    try {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { Accept: "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({
+          _subject: "New Jikmis Apartment availability request",
+          roomType,
+          checkIn,
+          checkOut,
+          guests,
+          replyEmail: INQUIRY_EMAIL
+        })
+      });
+      if (!response.ok) throw new Error("Email could not be sent.");
+      setBookingStatus("success");
+      setBookingMessage("Request emailed to our team and opened in WhatsApp.");
+    } catch {
+      setBookingStatus("error");
+      setBookingMessage("Opened WhatsApp, but the email could not be sent. Please also message us directly.");
+    } finally {
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    }
+  }
+
   return (
     <main className="apartment-site luxury-site">
       <header className={`site-header luxury-nav ${isScrolled ? "is-scrolled" : ""}`}>
@@ -266,28 +313,60 @@ export default function Home() {
         <div className="luxury-hero-overlay airbnb-hero-overlay" />
 
         <div className="airbnb-topbar">
-          <div className="airbnb-searchbar">
-            <div className="search-field">
+          <form className="airbnb-searchbar" onSubmit={handleBookingSearch}>
+            <label className="search-field">
               <span>Room Type</span>
-              <strong>{roomShowcase[activePhoto % roomShowcase.length].title}</strong>
-            </div>
-            <div className="search-field">
+              <select
+                value={bookingForm.roomType}
+                onChange={(event) => setBookingForm((current) => ({ ...current, roomType: event.target.value }))}
+                required
+              >
+                {roomShowcase.map((room) => (
+                  <option key={room.title} value={room.title}>
+                    {room.title}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="search-field">
               <span>Check in</span>
-              <strong>Add dates</strong>
-            </div>
-            <div className="search-field">
+              <input
+                type="date"
+                value={bookingForm.checkIn}
+                onChange={(event) => setBookingForm((current) => ({ ...current, checkIn: event.target.value }))}
+                required
+              />
+            </label>
+            <label className="search-field">
               <span>Check out</span>
-              <strong>Add dates</strong>
-            </div>
-            <div className="search-field">
+              <input
+                type="date"
+                value={bookingForm.checkOut}
+                onChange={(event) => setBookingForm((current) => ({ ...current, checkOut: event.target.value }))}
+                required
+              />
+            </label>
+            <label className="search-field">
               <span>Guests</span>
-              <strong>Add guests</strong>
-            </div>
-            <a className="search-button" href="#rooms" aria-label="Search available rooms">
+              <input
+                type="number"
+                min="1"
+                placeholder="Add guests"
+                value={bookingForm.guests}
+                onChange={(event) => setBookingForm((current) => ({ ...current, guests: event.target.value }))}
+                required
+              />
+            </label>
+            <button className="search-button" type="submit" aria-label="Send availability request" disabled={bookingStatus === "sending"}>
               <Search size={20} />
-            </a>
-          </div>
+            </button>
+          </form>
         </div>
+        {bookingMessage ? (
+          <p className={`airbnb-search-status ${bookingStatus === "error" ? "error" : "success"}`} role="status">
+            {bookingMessage}
+          </p>
+        ) : null}
 
         <div className="luxury-hero-content airbnb-hero-content">
           <p className="eyebrow"><MapPin size={16} /> Boudha, Kathmandu</p>
@@ -300,7 +379,7 @@ export default function Home() {
             <a className="button airbnb-explore" href="#rooms">
               Explore <ArrowRight size={18} />
             </a>
-            <a className="button secondary hero-secondary" href="https://wa.me/9779708538395" target="_blank" rel="noreferrer">
+            <a className="button secondary hero-secondary" href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer">
               <MessageCircle size={18} /> WhatsApp
             </a>
           </div>
@@ -518,11 +597,11 @@ export default function Home() {
           </p>
         </div>
         <div className="contact-actions">
-          <a className="button primary" href="https://wa.me/9779708538395" target="_blank" rel="noreferrer">
-            <MessageCircle size={18} /> WhatsApp +9779708538395
+          <a className="button primary" href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer">
+            <MessageCircle size={18} /> WhatsApp +{WHATSAPP_NUMBER}
           </a>
-          <a className="button secondary" href="tel:+9779708538395">
-            <Phone size={18} /> Call +9779708538395
+          <a className="button secondary" href={`tel:+${WHATSAPP_NUMBER}`}>
+            <Phone size={18} /> Call +{WHATSAPP_NUMBER}
           </a>
         </div>
       </section>

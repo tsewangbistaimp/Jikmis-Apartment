@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Jikmis Apartment | Luxury Serviced Apartments in Boudha",
+    default: "Jikmis Apartment",
     template: "%s | Jikmis Apartment"
   },
   description:
