@@ -365,8 +365,11 @@ export default function Home() {
           <a href="#amenities">Amenities</a>
           <a href="#nearby">Nearby</a>
           <a href="#gallery">Gallery</a>
-          <a href="#contact">Book</a>
+          <a href="#contact">Contact</a>
         </nav>
+        <button type="button" className="nav-book-button" onClick={() => setIsBookingModalOpen(true)}>
+          <Send size={15} /> Book Now
+        </button>
       </header>
 
       <section className="luxury-hero airbnb-hero">
@@ -738,14 +741,55 @@ export default function Home() {
             >
               <X size={18} />
             </button>
-            <p className="eyebrow"><MessageCircle size={16} /> Almost done</p>
-            <h2 id="booking-modal-title">Share your details to confirm</h2>
-            <p>
-              Requesting {bookingForm.roomType} from {bookingForm.checkIn || "—"} to {bookingForm.checkOut || "—"} for{" "}
-              {bookingForm.guests || "—"} guest(s). We&apos;ll send this to our WhatsApp and to {INQUIRY_EMAIL} at the same
-              time.
-            </p>
+            <p className="eyebrow"><MessageCircle size={16} /> Check Availability</p>
+            <h2 id="booking-modal-title">Book Jikmis Apartment</h2>
+            <p>Fill in your stay details and contact info. We&apos;ll send this to our WhatsApp and to {INQUIRY_EMAIL} at the same time.</p>
             <form className="form-grid booking-modal-form" onSubmit={handleBookingSubmit}>
+              <div className="form-grid-2">
+                <label>
+                  Room Type
+                  <select
+                    value={bookingForm.roomType}
+                    onChange={(event) => setBookingForm((current) => ({ ...current, roomType: event.target.value }))}
+                    required
+                  >
+                    {roomShowcase.map((room) => (
+                      <option key={room.title} value={room.title}>
+                        {room.title}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Guests
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder="Add guests"
+                    value={bookingForm.guests}
+                    onChange={(event) => setBookingForm((current) => ({ ...current, guests: event.target.value }))}
+                    required
+                  />
+                </label>
+                <label>
+                  Check in
+                  <input
+                    type="date"
+                    value={bookingForm.checkIn}
+                    onChange={(event) => setBookingForm((current) => ({ ...current, checkIn: event.target.value }))}
+                    required
+                  />
+                </label>
+                <label>
+                  Check out
+                  <input
+                    type="date"
+                    value={bookingForm.checkOut}
+                    onChange={(event) => setBookingForm((current) => ({ ...current, checkOut: event.target.value }))}
+                    required
+                  />
+                </label>
+              </div>
               <label>
                 Full Name
                 <input

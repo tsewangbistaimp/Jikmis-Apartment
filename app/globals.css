@@ -62,6 +62,29 @@ img { max-width: 100%; display: block; }
 nav { flex-wrap: wrap; gap: 16px; color: var(--muted); font-size: 0.94rem; }
 nav a:hover { color: var(--ink); }
 
+.nav-book-button {
+  align-items: center;
+  background: var(--accent);
+  border: 0;
+  border-radius: 999px;
+  color: white;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.88rem;
+  font-weight: 800;
+  gap: 6px;
+  order: 2;
+  padding: 11px 18px;
+  transition: background 180ms ease, transform 180ms ease;
+  white-space: nowrap;
+}
+
+.nav-book-button:hover {
+  background: var(--brown-dark);
+  transform: translateY(-1px);
+}
+
 .hero {
   display: grid;
   gap: 34px;
@@ -1243,6 +1266,12 @@ textarea { resize: vertical; }
   margin-top: 18px;
 }
 
+.form-grid-2 {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr 1fr;
+}
+
 .booking-modal-form button {
   justify-content: center;
   width: 100%;
@@ -1499,10 +1528,14 @@ textarea { resize: vertical; }
   .airbnb-hero-content { max-width: min(88%, 460px); }
   .airbnb-card-row { width: min(48vw, 520px); }
   .luxury-nav {
-    align-items: flex-start;
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    row-gap: 10px;
   }
   .luxury-nav nav {
+    flex-basis: 100%;
+    order: 3;
     overflow-x: auto;
     padding-bottom: 2px;
     width: 100%;
@@ -1510,9 +1543,14 @@ textarea { resize: vertical; }
   .luxury-nav nav a {
     flex: 0 0 auto;
   }
+  .nav-book-button {
+    margin-left: auto;
+  }
 }
 @media (max-width: 640px) {
-  .site-header { align-items: flex-start; flex-direction: column; }
+  .site-header { align-items: center; flex-direction: row; flex-wrap: wrap; row-gap: 10px; }
+  .site-header nav[aria-label="Main navigation"] { flex-basis: 100%; gap: 12px; order: 3; overflow-x: auto; padding-bottom: 2px; }
+  .nav-book-button { margin-left: auto; padding: 9px 14px; }
   .hero { min-height: auto; padding-top: 30px; }
   .room-grid, .stat-grid, .row, .facility-grid, .pricing-location-grid, .about-section, .about-stats { grid-template-columns: 1fr; }
   h1 { font-size: 2.5rem; }
@@ -1609,6 +1647,8 @@ textarea { resize: vertical; }
   .search-field { border-right: 0; flex: 1 1 42%; padding: 8px 6px; }
   .search-button { margin-left: auto; }
   .airbnb-search-status { margin: 0 0 18px; position: static; transform: none; width: fit-content; }
+  .form-grid-2 { grid-template-columns: 1fr; }
+  .booking-modal { max-width: 100%; }
   .airbnb-hero-content { max-width: 100%; position: static; margin-bottom: 22px; }
   .airbnb-card-row {
     overflow-x: auto;
