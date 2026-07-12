@@ -16,13 +16,11 @@ import {
   Coffee,
   Heart,
   HeartHandshake,
-  Image as ImageIcon,
   MapPin,
   Menu,
   MessageCircle,
   Phone,
   Plane,
-  Search,
   Send,
   ShieldCheck,
   Sparkles,
@@ -138,6 +136,10 @@ const galleryImages = [
   "/images/jikmis/gallery/jikmis-rooftop-yoga-view.jpg",
   "/images/jikmis/gallery/jikmis-rooftop-terrace-view.jpg"
 ];
+
+const propertyImages = galleryImages.filter(
+  (image) => !roomShowcase.some((room) => room.images.includes(image))
+);
 
 const cafeImages = [
   {
@@ -392,11 +394,15 @@ export default function Home() {
   const heroImage = useMemo(() => roomShowcase[2].images[activePhoto % roomShowcase[2].images.length], [activePhoto]);
   const nightsPreview = calculateNights(bookingForm.checkIn, bookingForm.checkOut);
 
-  function handleBookingSearch(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setBookingStatus("idle");
-    setBookingMessage("");
-    setIsBookingModalOpen(true);
+  function scrollToBookingForm(roomTitle?: string) {
+    if (roomTitle) {
+      setBookingForm((current) => ({ ...current, roomType: roomTitle }));
+    }
+    window.setTimeout(() => {
+      const bookingFormElement = document.getElementById("booking-form");
+      bookingFormElement?.scrollIntoView({ behavior: "smooth", block: "start" });
+      bookingFormElement?.querySelector<HTMLElement>("select, input")?.focus({ preventScroll: true });
+    }, 0);
   }
 
   async function handleBookingSubmit(event: FormEvent<HTMLFormElement>) {
@@ -454,7 +460,7 @@ export default function Home() {
           <a href="#cafe">Café</a>
           <a href="#amenities">Amenities</a>
           <a href="#nearby">Nearby</a>
-          <a href="#gallery">Gallery</a>
+          <a href="#tour">Tour</a>
           <a href="#contact">Contact</a>
         </nav>
         <div className="header-actions">
@@ -479,7 +485,7 @@ export default function Home() {
             <a href="#cafe" onClick={() => setIsMobileMenuOpen(false)}>Café</a>
             <a href="#amenities" onClick={() => setIsMobileMenuOpen(false)}>Amenities</a>
             <a href="#nearby" onClick={() => setIsMobileMenuOpen(false)}>Nearby</a>
-            <a href="#gallery" onClick={() => setIsMobileMenuOpen(false)}>Gallery</a>
+            <a href="#tour" onClick={() => setIsMobileMenuOpen(false)}>Tour</a>
             <a href="#contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
             <button
               type="button"
@@ -498,57 +504,6 @@ export default function Home() {
       <section className="luxury-hero airbnb-hero">
         <img className="luxury-hero-image" src={heroImage} alt="Luxury serviced apartment at Jikmis Apartment" />
         <div className="luxury-hero-overlay airbnb-hero-overlay" />
-
-        <div className="airbnb-topbar">
-          <form className="airbnb-searchbar" onSubmit={handleBookingSearch}>
-            <label className="search-field">
-              <span>Room Type</span>
-              <select
-                value={bookingForm.roomType}
-                onChange={(event) => setBookingForm((current) => ({ ...current, roomType: event.target.value }))}
-                required
-              >
-                {roomShowcase.map((room) => (
-                  <option key={room.title} value={room.title}>
-                    {room.title}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="search-field">
-              <span>Check in</span>
-              <input
-                type="date"
-                value={bookingForm.checkIn}
-                onChange={(event) => setBookingForm((current) => ({ ...current, checkIn: event.target.value }))}
-                required
-              />
-            </label>
-            <label className="search-field">
-              <span>Check out</span>
-              <input
-                type="date"
-                value={bookingForm.checkOut}
-                onChange={(event) => setBookingForm((current) => ({ ...current, checkOut: event.target.value }))}
-                required
-              />
-            </label>
-            <label className="search-field">
-              <span>Guests</span>
-              <input
-                type="number"
-                min="1"
-                placeholder="Add guests"
-                value={bookingForm.guests}
-                onChange={(event) => setBookingForm((current) => ({ ...current, guests: event.target.value }))}
-                required
-              />
-            </label>
-            <button className="search-button" type="submit" aria-label="Send availability request" disabled={bookingStatus === "sending"}>
-              <Search size={20} />
-            </button>
-          </form>
-        </div>
 
         <div className="luxury-hero-content airbnb-hero-content">
           <p className="eyebrow"><MapPin size={16} /> Boudha, Kathmandu</p>
@@ -653,7 +608,13 @@ export default function Home() {
                       <li key={amenity}><Check size={15} /> {amenity}</li>
                     ))}
                   </ul>
-                  <a className="text-link room-detail-link" href="#contact">View Details</a>
+                  <button
+                    type="button"
+                    className="button primary room-book-button"
+                    onClick={() => scrollToBookingForm(room.title)}
+                  >
+                    <Send size={16} /> Book {room.title}
+                  </button>
                 </div>
               </article>
             );
@@ -665,6 +626,7 @@ export default function Home() {
         <div className="section-heading centered-heading">
           <p className="eyebrow">Apartment Tour</p>
           <h2>Step inside Jikmis Apartment.</h2>
+          <p>Watch each room, then browse its full photo set below.</p>
         </div>
         <div className="video-showcase-grid">
           {apartmentVideos.map((video) => (
@@ -681,6 +643,59 @@ export default function Home() {
               <span className="video-card-caption">{video.title}</span>
             </div>
           ))}
+        </div>
+
+        <div className="tour-photo-groups">
+          {roomShowcase.map((room) => (
+            <div className="tour-photo-group" key={room.title}>
+              <div className="tour-photo-group-heading">
+                <h3>{room.title}</h3>
+                <button
+                  type="button"
+                  className="text-link"
+                  onClick={() => scrollToBookingForm(room.title)}
+                >
+                  Book this room
+                </button>
+              </div>
+              <div className="tour-photo-grid">
+                {room.images.map((image, photoIndex) => (
+                  <button
+                    type="button"
+                    className="tour-photo-tile"
+                    key={image}
+                    onClick={() => setLightbox({ images: room.images, title: room.title, index: photoIndex })}
+                    aria-label={`View ${room.title} photo ${photoIndex + 1} of ${room.images.length}`}
+                  >
+                    <img src={image} alt={`${room.title} photo ${photoIndex + 1}`} loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {propertyImages.length > 0 ? (
+            <div className="tour-photo-group">
+              <div className="tour-photo-group-heading">
+                <h3>Property &amp; Rooftop</h3>
+              </div>
+              <div className="tour-photo-grid">
+                {propertyImages.map((image, photoIndex) => (
+                  <button
+                    type="button"
+                    className="tour-photo-tile"
+                    key={image}
+                    onClick={() =>
+                      setLightbox({ images: propertyImages, title: "Property & Rooftop", index: photoIndex })
+                    }
+                    aria-label={`View property photo ${photoIndex + 1} of ${propertyImages.length}`}
+                  >
+                    <img src={image} alt={`Jikmis Apartment property photo ${photoIndex + 1}`} loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -806,39 +821,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-shell reveal" id="gallery">
-        <div className="section-heading centered-heading">
-          <p className="eyebrow">Gallery</p>
-          <h2>Real rooms, real warmth.</h2>
-        </div>
-        <div className="luxury-gallery">
-          {galleryImages.slice(0, 6).map((image, index) => {
-            const isLastTile = index === 5;
-            const remaining = galleryImages.length - 6;
-            return (
-              <button
-                type="button"
-                className="gallery-tile"
-                key={image}
-                onClick={() => setLightbox({ images: galleryImages, title: "Jikmis Apartment Gallery", index })}
-                aria-label={
-                  isLastTile && remaining > 0
-                    ? `View all ${galleryImages.length} gallery photos`
-                    : `View gallery photo ${index + 1}`
-                }
-              >
-                <img src={image} alt={`Jikmis Apartment gallery image ${index + 1}`} />
-                {isLastTile && remaining > 0 ? (
-                  <span className="gallery-more-overlay">
-                    <ImageIcon size={20} /> +{remaining} Photos
-                  </span>
-                ) : null}
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
       <section className="contact-section luxury-contact booking-section reveal" id="contact">
         <div className="contact-intro">
           <p className="eyebrow">Direct Booking</p>
@@ -857,7 +839,7 @@ export default function Home() {
           </div>
         </div>
 
-        <form className="booking-panel form-card" onSubmit={handleBookingSubmit}>
+        <form className="booking-panel form-card" id="booking-form" onSubmit={handleBookingSubmit}>
           <p className="booking-panel-title">Book in seconds</p>
           <div className="form-grid-2">
             <label>

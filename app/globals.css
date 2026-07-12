@@ -1377,8 +1377,10 @@ textarea { resize: vertical; }
   flex: 0 0 auto;
 }
 
-.room-detail-link {
-  color: var(--brown);
+.room-book-button {
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .video-showcase-grid {
@@ -1413,6 +1415,55 @@ textarea { resize: vertical; }
   padding: 34px 18px 18px;
   position: absolute;
   right: 0;
+}
+
+.tour-photo-groups {
+  display: grid;
+  gap: 40px;
+  margin-top: 48px;
+}
+
+.tour-photo-group-heading {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tour-photo-group-heading h3 {
+  color: var(--ink);
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.tour-photo-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.tour-photo-tile {
+  aspect-ratio: 4 / 3;
+  background: none;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.tour-photo-tile:hover {
+  box-shadow: 0 14px 34px rgba(10, 20, 40, 0.18);
+  transform: translateY(-3px);
+}
+
+.tour-photo-tile img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
 }
 
 .cafe-section {
@@ -1926,6 +1977,7 @@ textarea { resize: vertical; }
   .cafe-grid { grid-template-columns: 1fr; }
   .video-showcase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cafe-photo-strip { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .tour-photo-groups { display: none; }
   .cafe-menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .luxury-room-grid, .review-grid { grid-template-columns: 1fr; }
   .luxury-about, .nearby-section { grid-template-columns: 1fr; }
