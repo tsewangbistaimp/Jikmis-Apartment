@@ -180,6 +180,12 @@ const WHATSAPP_NUMBER = "9779708538395";
 const INQUIRY_EMAIL = "jikmisdonkhang@gmail.com";
 const FORMSPREE_ENDPOINT = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || "https://formspree.io/f/xvzepwkw";
 
+function calculateNights(checkIn: string, checkOut: string) {
+  if (!checkIn || !checkOut) return 0;
+  const nights = Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000);
+  return Number.isFinite(nights) && nights > 0 ? nights : 0;
+}
+
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activePhoto, setActivePhoto] = useState(0);
@@ -304,6 +310,7 @@ export default function Home() {
   }, [isBookingModalOpen]);
 
   const heroImage = useMemo(() => roomShowcase[2].images[activePhoto % roomShowcase[2].images.length], [activePhoto]);
+  const nightsPreview = calculateNights(bookingForm.checkIn, bookingForm.checkOut);
 
   function handleBookingSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -317,8 +324,10 @@ export default function Home() {
 
     const { roomType, checkIn, checkOut, guests } = bookingForm;
     const { name, email, phone } = contactDetails;
+    const nights = calculateNights(checkIn, checkOut);
+    const nightsLine = nights > 0 ? `${nights} night${nights === 1 ? "" : "s"}` : "—";
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-      `Hello Jikmis Apartment, I would like to check availability.\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nRoom type: ${roomType}\nCheck-in: ${checkIn}\nCheck-out: ${checkOut}\nGuests: ${guests}`
+      `Hello Jikmis Apartment, I would like to check availability.\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nRoom type: ${roomType}\nCheck-in: ${checkIn}\nCheck-out: ${checkOut}\nNights: ${nightsLine}\nGuests: ${guests}`
     )}`;
 
     setBookingStatus("sending");
@@ -336,6 +345,7 @@ export default function Home() {
           roomType,
           checkIn,
           checkOut,
+          nights: nightsLine,
           guests,
           _replyto: email
         })
@@ -646,23 +656,117 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="contact-section luxury-contact" id="contact">
-        <div>
+      <section className="contact-section luxury-contact booking-section" id="contact">
+        <div className="contact-intro">
           <p className="eyebrow">Direct Booking</p>
           <h2>Ready to check availability?</h2>
           <p>
-            Share your dates, apartment type, number of guests, and preferred contact method. Our AI assistant and team
-            can help guide the next step.
+            Share your dates, apartment type, number of guests, and contact details below, or reach us directly. Every
+            request goes to our WhatsApp and email at the same time.
           </p>
+          <div className="contact-actions">
+            <a className="button primary" href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer">
+              <MessageCircle size={18} /> WhatsApp +{WHATSAPP_NUMBER}
+            </a>
+            <a className="button secondary" href={`tel:+${WHATSAPP_NUMBER}`}>
+              <Phone size={18} /> Call +{WHATSAPP_NUMBER}
+            </a>
+          </div>
         </div>
-        <div className="contact-actions">
-          <a className="button primary" href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer">
-            <MessageCircle size={18} /> WhatsApp +{WHATSAPP_NUMBER}
-          </a>
-          <a className="button secondary" href={`tel:+${WHATSAPP_NUMBER}`}>
-            <Phone size={18} /> Call +{WHATSAPP_NUMBER}
-          </a>
-        </div>
+
+        <form className="booking-panel form-card" onSubmit={handleBookingSubmit}>
+          <p className="booking-panel-title">Book in seconds</p>
+          <div className="form-grid-2">
+            <label>
+              Room Type
+              <select
+                value={bookingForm.roomType}
+                onChange={(event) => setBookingForm((current) => ({ ...current, roomType: event.target.value }))}
+                required
+              >
+                {roomShowcase.map((room) => (
+                  <option key={room.title} value={room.title}>
+                    {room.title}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Guests
+              <input
+                type="number"
+                min="1"
+                placeholder="Add guests"
+                value={bookingForm.guests}
+                onChange={(event) => setBookingForm((current) => ({ ...current, guests: event.target.value }))}
+                required
+              />
+            </label>
+            <label>
+              Check in
+              <input
+                type="date"
+                value={bookingForm.checkIn}
+                onChange={(event) => setBookingForm((current) => ({ ...current, checkIn: event.target.value }))}
+                required
+              />
+            </label>
+            <label>
+              Check out
+              <input
+                type="date"
+                value={bookingForm.checkOut}
+                onChange={(event) => setBookingForm((current) => ({ ...current, checkOut: event.target.value }))}
+                required
+              />
+            </label>
+          </div>
+          {nightsPreview > 0 ? (
+            <p className="nights-preview">
+              {nightsPreview} night{nightsPreview === 1 ? "" : "s"} total
+            </p>
+          ) : null}
+          <label>
+            Full Name
+            <input
+              type="text"
+              placeholder="Your name"
+              value={contactDetails.name}
+              onChange={(event) => setContactDetails((current) => ({ ...current, name: event.target.value }))}
+              required
+            />
+          </label>
+          <div className="form-grid-2">
+            <label>
+              Email
+              <input
+                type="email"
+                placeholder="you@example.com"
+                value={contactDetails.email}
+                onChange={(event) => setContactDetails((current) => ({ ...current, email: event.target.value }))}
+                required
+              />
+            </label>
+            <label>
+              Phone Number
+              <input
+                type="tel"
+                placeholder="+977..."
+                value={contactDetails.phone}
+                onChange={(event) => setContactDetails((current) => ({ ...current, phone: event.target.value }))}
+                required
+              />
+            </label>
+          </div>
+          <button className="button primary" type="submit" disabled={bookingStatus === "sending"}>
+            <Send size={18} /> {bookingStatus === "sending" ? "Sending..." : "Send to WhatsApp & Email"}
+          </button>
+          {bookingMessage ? (
+            <p className={`message ${bookingStatus === "error" ? "error" : "success"}`} role="status">
+              {bookingMessage}
+            </p>
+          ) : null}
+        </form>
       </section>
 
       <section className="section-shell map-section" id="map">
@@ -790,6 +894,11 @@ export default function Home() {
                   />
                 </label>
               </div>
+              {nightsPreview > 0 ? (
+                <p className="nights-preview">
+                  {nightsPreview} night{nightsPreview === 1 ? "" : "s"} total
+                </p>
+              ) : null}
               <label>
                 Full Name
                 <input

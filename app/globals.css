@@ -250,18 +250,39 @@ textarea { resize: vertical; }
 .check-list li { align-items: center; display: flex; gap: 10px; font-weight: 800; line-height: 1.35; }
 .check-list svg { color: var(--primary); flex: 0 0 auto; }
 .contact-section {
-  align-items: center;
+  align-items: start;
   background: #211a12;
   color: white;
   display: grid;
-  gap: 24px;
-  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 40px;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 440px);
   margin-top: 28px;
   padding: 58px clamp(16px, 5vw, 72px);
 }
 .contact-section .eyebrow { color: #e2a374; }
 .contact-section p { color: #d9cdbd; max-width: 680px; }
-.contact-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; max-width: 520px; }
+.contact-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-start; margin-top: 26px; max-width: 520px; }
+
+.booking-panel {
+  animation: fadeUp 680ms ease both;
+  border-top: 3px solid var(--accent);
+  display: grid;
+  gap: 14px;
+}
+
+.booking-panel-title {
+  color: var(--ink) !important;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 !important;
+  max-width: none !important;
+}
+
+.booking-panel .button {
+  justify-content: center;
+  width: 100%;
+}
 .site-footer {
   align-items: center;
   color: var(--muted);
@@ -1272,6 +1293,18 @@ textarea { resize: vertical; }
   grid-template-columns: 1fr 1fr;
 }
 
+.nights-preview {
+  background: var(--accent-soft);
+  border-radius: 999px;
+  color: var(--brown-dark);
+  display: inline-flex;
+  font-size: 0.82rem;
+  font-weight: 800;
+  margin: 0;
+  padding: 8px 14px;
+  width: fit-content;
+}
+
 .booking-modal-form button {
   justify-content: center;
   width: 100%;
@@ -1642,7 +1675,7 @@ textarea { resize: vertical; }
   .luxury-hero-content h1 { font-size: clamp(2.2rem, 12vw, 3.35rem); line-height: 1.02; }
   .luxury-hero-content p:not(.eyebrow) { font-size: 0.95rem; line-height: 1.62; }
   .airbnb-hero { padding: 118px 16px 24px; }
-  .airbnb-topbar { position: static; padding: 0 0 22px; }
+  .airbnb-topbar { margin-top: 34px; position: static; padding: 0 0 22px; }
   .airbnb-searchbar { border-radius: 18px; flex-wrap: wrap; padding: 14px; }
   .search-field { border-right: 0; flex: 1 1 42%; padding: 8px 6px; }
   .search-button { margin-left: auto; }
