@@ -223,6 +223,31 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const revealElements = Array.from(document.querySelectorAll(".reveal"));
+    if (revealElements.length === 0) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      revealElements.forEach((element) => element.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: "0px 0px -80px 0px", threshold: 0.12 }
+    );
+
+    revealElements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     const timer = window.setInterval(() => {
       setActivePhoto((current) => current + 1);
     }, 2000);
@@ -572,7 +597,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-shell luxury-about" id="about">
+      <section className="section-shell luxury-about reveal" id="about">
         <div>
           <p className="eyebrow">About Jikmis</p>
           <h2>A quiet serviced apartment designed for comfort in Boudha.</h2>
@@ -590,7 +615,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-shell" id="rooms">
+      <section className="section-shell reveal" id="rooms">
         <div className="section-heading centered-heading">
           <p className="eyebrow">Apartment Showcase</p>
           <h2>Choose your space in Boudha.</h2>
@@ -636,7 +661,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-shell video-showcase" id="tour">
+      <section className="section-shell video-showcase reveal" id="tour">
         <div className="section-heading centered-heading">
           <p className="eyebrow">Apartment Tour</p>
           <h2>Step inside Jikmis Apartment.</h2>
@@ -659,7 +684,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-shell cafe-section" id="cafe">
+      <section className="section-shell cafe-section reveal" id="cafe">
         <div className="cafe-grid">
           <div className="cafe-media">
             <button
@@ -724,7 +749,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-band luxury-band" id="amenities">
+      <section className="section-band luxury-band reveal" id="amenities">
         <div className="section-shell">
           <div className="section-heading centered-heading">
             <p className="eyebrow">Amenities</p>
@@ -745,7 +770,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-shell nearby-section" id="nearby">
+      <section className="section-shell nearby-section reveal" id="nearby">
         <div className="section-heading">
           <p className="eyebrow">Nearby Attractions</p>
           <h2>Stay close to the best of Boudha.</h2>
@@ -765,7 +790,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-shell review-section">
+      <section className="section-shell review-section reveal">
         <div className="section-heading centered-heading">
           <p className="eyebrow">Guest Reviews</p>
           <h2>Warm stays, simple bookings, trusted comfort.</h2>
@@ -781,7 +806,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section-shell" id="gallery">
+      <section className="section-shell reveal" id="gallery">
         <div className="section-heading centered-heading">
           <p className="eyebrow">Gallery</p>
           <h2>Real rooms, real warmth.</h2>
@@ -814,7 +839,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="contact-section luxury-contact booking-section" id="contact">
+      <section className="contact-section luxury-contact booking-section reveal" id="contact">
         <div className="contact-intro">
           <p className="eyebrow">Direct Booking</p>
           <h2>Ready to check availability?</h2>
@@ -927,7 +952,7 @@ export default function Home() {
         </form>
       </section>
 
-      <section className="section-shell map-section" id="map">
+      <section className="section-shell map-section reveal" id="map">
         <div className="section-heading centered-heading">
           <p className="eyebrow">Find Us</p>
           <h2>Jikmis Apartment near Boudhanath.</h2>
