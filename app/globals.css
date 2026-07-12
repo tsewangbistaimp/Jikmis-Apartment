@@ -1229,6 +1229,25 @@ textarea { resize: vertical; }
   backdrop-filter: blur(18px);
 }
 
+.booking-modal {
+  max-width: 480px;
+  width: min(100%, 480px);
+}
+
+.booking-modal p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.booking-modal-form {
+  margin-top: 18px;
+}
+
+.booking-modal-form button {
+  justify-content: center;
+  width: 100%;
+}
+
 .cafe-modal-close {
   align-items: center;
   background: #fff;

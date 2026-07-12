@@ -20,6 +20,7 @@ import {
   Phone,
   Plane,
   Search,
+  Send,
   ShieldCheck,
   Sparkles,
   Star,
@@ -191,6 +192,8 @@ export default function Home() {
   });
   const [bookingStatus, setBookingStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [bookingMessage, setBookingMessage] = useState("");
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [contactDetails, setContactDetails] = useState({ name: "", email: "", phone: "" });
 
   useEffect(() => {
     const updateScrollState = () => setIsScrolled(window.scrollY > 24);
@@ -253,14 +256,69 @@ export default function Home() {
     };
   }, [isCafeMenuOpen]);
 
+  useEffect(() => {
+    if (!isBookingModalOpen) return;
+
+    const previousActiveElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousOverflow = document.body.style.overflow;
+
+    const getFocusableElements = () =>
+      Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".booking-modal button, .booking-modal [href], .booking-modal input, .booking-modal select, .booking-modal textarea, .booking-modal [tabindex]:not([tabindex='-1'])"
+        )
+      ).filter((element) => !element.hasAttribute("disabled") && element.offsetParent !== null);
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsBookingModalOpen(false);
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusableElements = getFocusableElements();
+      if (!focusableElements.length) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+    window.setTimeout(() => document.querySelector<HTMLElement>(".booking-modal-close")?.focus(), 0);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+      previousActiveElement?.focus();
+    };
+  }, [isBookingModalOpen]);
+
   const heroImage = useMemo(() => roomShowcase[2].images[activePhoto % roomShowcase[2].images.length], [activePhoto]);
 
-  async function handleBookingSearch(event: FormEvent<HTMLFormElement>) {
+  function handleBookingSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setBookingStatus("idle");
+    setBookingMessage("");
+    setIsBookingModalOpen(true);
+  }
+
+  async function handleBookingSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const { roomType, checkIn, checkOut, guests } = bookingForm;
+    const { name, email, phone } = contactDetails;
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-      `Hello Jikmis Apartment, I would like to check availability.\nRoom type: ${roomType}\nCheck-in: ${checkIn}\nCheck-out: ${checkOut}\nGuests: ${guests}`
+      `Hello Jikmis Apartment, I would like to check availability.\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nRoom type: ${roomType}\nCheck-in: ${checkIn}\nCheck-out: ${checkOut}\nGuests: ${guests}`
     )}`;
 
     setBookingStatus("sending");
@@ -272,11 +330,14 @@ export default function Home() {
         headers: { Accept: "application/json", "Content-Type": "application/json" },
         body: JSON.stringify({
           _subject: "New Jikmis Apartment availability request",
+          name,
+          email,
+          phone,
           roomType,
           checkIn,
           checkOut,
           guests,
-          replyEmail: INQUIRY_EMAIL
+          _replyto: email
         })
       });
       if (!response.ok) throw new Error("Email could not be sent.");
@@ -362,11 +423,6 @@ export default function Home() {
             </button>
           </form>
         </div>
-        {bookingMessage ? (
-          <p className={`airbnb-search-status ${bookingStatus === "error" ? "error" : "success"}`} role="status">
-            {bookingMessage}
-          </p>
-        ) : null}
 
         <div className="luxury-hero-content airbnb-hero-content">
           <p className="eyebrow"><MapPin size={16} /> Boudha, Kathmandu</p>
@@ -661,6 +717,74 @@ export default function Home() {
                 </section>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {isBookingModalOpen && (
+        <div className="cafe-modal-backdrop" role="presentation" onClick={() => setIsBookingModalOpen(false)}>
+          <div
+            className="cafe-modal booking-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="booking-modal-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              className="cafe-modal-close booking-modal-close"
+              type="button"
+              aria-label="Close booking form"
+              onClick={() => setIsBookingModalOpen(false)}
+            >
+              <X size={18} />
+            </button>
+            <p className="eyebrow"><MessageCircle size={16} /> Almost done</p>
+            <h2 id="booking-modal-title">Share your details to confirm</h2>
+            <p>
+              Requesting {bookingForm.roomType} from {bookingForm.checkIn || "—"} to {bookingForm.checkOut || "—"} for{" "}
+              {bookingForm.guests || "—"} guest(s). We&apos;ll send this to our WhatsApp and to {INQUIRY_EMAIL} at the same
+              time.
+            </p>
+            <form className="form-grid booking-modal-form" onSubmit={handleBookingSubmit}>
+              <label>
+                Full Name
+                <input
+                  type="text"
+                  placeholder="Your name"
+                  value={contactDetails.name}
+                  onChange={(event) => setContactDetails((current) => ({ ...current, name: event.target.value }))}
+                  required
+                />
+              </label>
+              <label>
+                Email
+                <input
+                  type="email"
+                  placeholder="you@example.com"
+                  value={contactDetails.email}
+                  onChange={(event) => setContactDetails((current) => ({ ...current, email: event.target.value }))}
+                  required
+                />
+              </label>
+              <label>
+                Phone Number
+                <input
+                  type="tel"
+                  placeholder="+977..."
+                  value={contactDetails.phone}
+                  onChange={(event) => setContactDetails((current) => ({ ...current, phone: event.target.value }))}
+                  required
+                />
+              </label>
+              <button className="button primary" type="submit" disabled={bookingStatus === "sending"}>
+                <Send size={18} /> {bookingStatus === "sending" ? "Sending..." : "Send to WhatsApp & Email"}
+              </button>
+              {bookingMessage ? (
+                <p className={`message ${bookingStatus === "error" ? "error" : "success"}`} role="status">
+                  {bookingMessage}
+                </p>
+              ) : null}
+            </form>
           </div>
         </div>
       )}
