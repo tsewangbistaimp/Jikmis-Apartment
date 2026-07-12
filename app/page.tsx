@@ -16,6 +16,7 @@ import {
   Coffee,
   Heart,
   HeartHandshake,
+  Home as HomeIcon,
   MapPin,
   Menu,
   MessageCircle,
@@ -467,38 +468,7 @@ export default function Home() {
           <button type="button" className="nav-book-button" onClick={() => setIsBookingModalOpen(true)}>
             <Send size={15} /> <span>Book Now</span>
           </button>
-          <button
-            type="button"
-            className="mobile-menu-toggle"
-            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={isMobileMenuOpen}
-            onClick={() => setIsMobileMenuOpen((open) => !open)}
-          >
-            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
         </div>
-
-        {isMobileMenuOpen ? (
-          <nav className="mobile-nav-panel" aria-label="Mobile navigation">
-            <a href="#about" onClick={() => setIsMobileMenuOpen(false)}>About</a>
-            <a href="#rooms" onClick={() => setIsMobileMenuOpen(false)}>Rooms</a>
-            <a href="#cafe" onClick={() => setIsMobileMenuOpen(false)}>Café</a>
-            <a href="#amenities" onClick={() => setIsMobileMenuOpen(false)}>Amenities</a>
-            <a href="#nearby" onClick={() => setIsMobileMenuOpen(false)}>Nearby</a>
-            <a href="#tour" onClick={() => setIsMobileMenuOpen(false)}>Tour</a>
-            <a href="#contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
-            <button
-              type="button"
-              className="button primary mobile-nav-book"
-              onClick={() => {
-                setIsMobileMenuOpen(false);
-                setIsBookingModalOpen(true);
-              }}
-            >
-              <Send size={16} /> Book Now
-            </button>
-          </nav>
-        ) : null}
       </header>
 
       <section className="luxury-hero airbnb-hero">
@@ -580,7 +550,11 @@ export default function Home() {
           {roomShowcase.map((room, index) => {
             const image = room.images[activePhoto % room.images.length];
             return (
-              <article className="luxury-room-card" key={room.title}>
+              <article
+                className="luxury-room-card reveal"
+                key={room.title}
+                style={{ transitionDelay: `${index * 90}ms` }}
+              >
                 <button
                   type="button"
                   className="room-image-frame"
@@ -629,8 +603,8 @@ export default function Home() {
           <p>Watch each room, then browse its full photo set below.</p>
         </div>
         <div className="video-showcase-grid">
-          {apartmentVideos.map((video) => (
-            <div className="video-card" key={video.src}>
+          {apartmentVideos.map((video, index) => (
+            <div className="video-card reveal" key={video.src} style={{ transitionDelay: `${index * 90}ms` }}>
               <video
                 src={video.src}
                 poster={video.poster}
@@ -771,10 +745,14 @@ export default function Home() {
             <h2>Everything needed for an easy stay.</h2>
           </div>
           <div className="facility-grid">
-            {amenities.map((item) => {
+            {amenities.map((item, index) => {
               const Icon = item.icon;
               return (
-                <article className="facility-card premium-card" key={item.title}>
+                <article
+                  className="facility-card premium-card reveal"
+                  key={item.title}
+                  style={{ transitionDelay: `${index * 70}ms` }}
+                >
                   <Icon size={24} />
                   <h3>{item.title}</h3>
                   <p>{item.text}</p>
@@ -792,10 +770,14 @@ export default function Home() {
           <p>Walk to the stupa, find cafes easily, and keep airport access simple.</p>
         </div>
         <div className="nearby-grid">
-          {attractions.map((item) => {
+          {attractions.map((item, index) => {
             const Icon = item.icon;
             return (
-              <article className="nearby-card" key={item.title}>
+              <article
+                className="nearby-card reveal"
+                key={item.title}
+                style={{ transitionDelay: `${index * 70}ms` }}
+              >
                 <Icon size={22} />
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
@@ -811,8 +793,12 @@ export default function Home() {
           <h2>Warm stays, simple bookings, trusted comfort.</h2>
         </div>
         <div className="review-grid">
-          {reviews.map((review) => (
-            <article className="review-card" key={review.name}>
+          {reviews.map((review, index) => (
+            <article
+              className="review-card reveal"
+              key={review.name}
+              style={{ transitionDelay: `${index * 90}ms` }}
+            >
               <div className="star-row">{[1, 2, 3, 4, 5].map((star) => <Star key={star} size={16} fill="currentColor" />)}</div>
               <p>{review.quote}</p>
               <strong>{review.name}</strong>
@@ -1163,6 +1149,54 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {isMobileMenuOpen ? (
+        <nav className="mobile-more-sheet" aria-label="More site sections">
+          <a href="#tour" onClick={() => setIsMobileMenuOpen(false)}>Apartment Tour</a>
+          <a href="#amenities" onClick={() => setIsMobileMenuOpen(false)}>Amenities</a>
+          <a href="#nearby" onClick={() => setIsMobileMenuOpen(false)}>Nearby</a>
+          <a href="#map" onClick={() => setIsMobileMenuOpen(false)}>Map</a>
+          <button
+            type="button"
+            className="button primary mobile-nav-book"
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              setIsBookingModalOpen(true);
+            }}
+          >
+            <Send size={16} /> Book Now
+          </button>
+        </nav>
+      ) : null}
+
+      <nav className="mobile-tab-bar" aria-label="Mobile section navigation">
+        <a href="#about" className="mobile-tab-item" onClick={() => setIsMobileMenuOpen(false)}>
+          <HomeIcon size={20} />
+          <span>About</span>
+        </a>
+        <a href="#rooms" className="mobile-tab-item" onClick={() => setIsMobileMenuOpen(false)}>
+          <BedDouble size={20} />
+          <span>Rooms</span>
+        </a>
+        <a href="#cafe" className="mobile-tab-item" onClick={() => setIsMobileMenuOpen(false)}>
+          <Coffee size={20} />
+          <span>Café</span>
+        </a>
+        <a href="#contact" className="mobile-tab-item" onClick={() => setIsMobileMenuOpen(false)}>
+          <MessageCircle size={20} />
+          <span>Contact</span>
+        </a>
+        <button
+          type="button"
+          className={`mobile-tab-item mobile-tab-menu-button ${isMobileMenuOpen ? "is-active" : ""}`}
+          aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isMobileMenuOpen}
+          onClick={() => setIsMobileMenuOpen((open) => !open)}
+        >
+          {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          <span>Menu</span>
+        </button>
+      </nav>
 
       <ApartmentChatbot />
     </main>
