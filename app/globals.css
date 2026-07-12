@@ -397,6 +397,17 @@ textarea { resize: vertical; }
   padding-left: 40px;
 }
 
+.date-field input[type="date"]::-webkit-date-and-time-value {
+  font-size: 16px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.date-field input[type="date"]::-webkit-datetime-edit {
+  font-size: 16px;
+  font-weight: 600;
+}
+
 .booking-panel select:focus,
 .booking-panel input:focus {
   border-color: var(--accent);
