@@ -965,7 +965,11 @@ export default function Home() {
       )}
 
       {isBookingModalOpen && (
-        <div className="cafe-modal-backdrop" role="presentation" onClick={() => setIsBookingModalOpen(false)}>
+        <div
+          className="cafe-modal-backdrop booking-modal-backdrop"
+          role="presentation"
+          onClick={() => setIsBookingModalOpen(false)}
+        >
           <div
             className="cafe-modal booking-modal"
             role="dialog"

@@ -2329,6 +2329,28 @@ textarea { resize: vertical; }
   .cafe-modal h2 {
     padding-right: 44px;
   }
+  .booking-modal-backdrop {
+    align-items: stretch;
+    padding: 0;
+  }
+  .booking-modal-backdrop .booking-modal {
+    border: 0;
+    border-radius: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+    max-width: 100%;
+    padding: 20px 18px calc(20px + env(safe-area-inset-bottom));
+    width: 100%;
+  }
+  .booking-modal-backdrop .booking-modal h2 {
+    padding-right: 44px;
+  }
+  .booking-modal-backdrop .booking-modal-close {
+    position: fixed;
+    right: calc(16px + env(safe-area-inset-right));
+    top: calc(16px + env(safe-area-inset-top));
+    z-index: 1;
+  }
   .room-title-row, .room-price-row { align-items: flex-start; flex-direction: column; }
   .room-price-row span { text-align: left; }
   .luxury-room-card,
