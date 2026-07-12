@@ -584,8 +584,8 @@ export default function Home() {
           <p>Watch each room, then browse its full photo set below.</p>
         </div>
         <div className="video-showcase-grid">
-          {apartmentVideos.map((video, index) => (
-            <div className="video-card reveal" key={video.src} style={{ transitionDelay: `${index * 90}ms` }}>
+          {apartmentVideos.map((video) => (
+            <div className="video-card" key={video.src}>
               <video
                 src={video.src}
                 poster={video.poster}

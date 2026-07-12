@@ -2250,20 +2250,24 @@ textarea { resize: vertical; }
   .luxury-about { padding-top: 48px; }
   .nearby-grid, .luxury-gallery { grid-template-columns: 1fr; }
   .video-showcase-grid {
+    align-items: stretch;
     display: flex;
     gap: 14px;
     grid-template-columns: none;
     overflow-x: auto;
+    overflow-y: hidden;
     padding: 4px 4px 10px;
     scroll-padding-left: 4px;
     scroll-snap-type: x mandatory;
+    touch-action: pan-x;
   }
   .video-showcase-grid::-webkit-scrollbar { display: none; }
   .video-card {
-    aspect-ratio: 9 / 16;
+    aspect-ratio: 4 / 3;
     flex: 0 0 82vw;
-    height: min(74vh, 640px);
+    height: auto;
     scroll-snap-align: start;
+    scroll-snap-stop: always;
     width: auto;
   }
   .luxury-gallery .gallery-tile:nth-child(1), .luxury-gallery .gallery-tile:nth-child(6) { grid-column: span 1; aspect-ratio: 1 / 1; }
