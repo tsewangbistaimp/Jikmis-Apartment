@@ -68,6 +68,15 @@ export default function ApartmentChatbot() {
     window.setTimeout(() => inputRef.current?.focus(), 0);
   }
 
+  useEffect(() => {
+    const handleExternalOpen = () => {
+      setIsOpen(true);
+      window.setTimeout(() => inputRef.current?.focus(), 0);
+    };
+    window.addEventListener("jikmis:open-chat", handleExternalOpen);
+    return () => window.removeEventListener("jikmis:open-chat", handleExternalOpen);
+  }, []);
+
   function dismissHelperNote() {
     sessionStorage.setItem(helperNoteStorageKey, "true");
     setIsHelperNoteHidden(true);
@@ -218,7 +227,6 @@ export default function ApartmentChatbot() {
         <section className="chatbot-panel" aria-label="Jikmis Apartment chat">
           <header className="chatbot-header">
             <div>
-              <span className="chatbot-kicker">Ask JK</span>
               <strong>Jikmis Apartment</strong>
             </div>
             <button className="icon-button" type="button" onClick={() => setIsOpen(false)} aria-label="Close chat">
@@ -280,9 +288,10 @@ export default function ApartmentChatbot() {
         className="chatbot-launcher"
         type="button"
         onClick={openChat}
+        aria-label="Open chat"
       >
         <Bot size={22} />
-        <span>Ask JK</span>
+        <span>Chat</span>
       </button>
     </div>
   );

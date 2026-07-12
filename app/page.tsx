@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
   Bath,
   BedDouble,
+  Bot,
   Building2,
   Camera,
   Car,
@@ -238,7 +239,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const sectionIds = ["about", "rooms", "cafe", "contact"];
+    const sectionIds = ["about", "rooms", "contact"];
     const sections = sectionIds
       .map((id) => document.getElementById(id))
       .filter((element): element is HTMLElement => element !== null);
@@ -458,7 +459,7 @@ export default function Home() {
     }
   }
 
-  const mobileTabOrder = ["about", "rooms", "cafe", "contact", "menu"];
+  const mobileTabOrder = ["about", "rooms", "chat", "contact", "menu"];
   const activeMobileTabKey = isMobileMenuOpen ? "menu" : activeMobileTab;
 
   return (
@@ -489,7 +490,6 @@ export default function Home() {
         <div className="luxury-hero-overlay airbnb-hero-overlay" />
 
         <div className="luxury-hero-content airbnb-hero-content">
-          <p className="eyebrow"><MapPin size={16} /> Boudha, Kathmandu</p>
           <h1>Jikmis Apartment.</h1>
           <p>
             Serviced studios and family apartments with warm interiors, private kitchens, hot water, and direct booking
@@ -1120,6 +1120,7 @@ export default function Home() {
 
       {isMobileMenuOpen ? (
         <nav className="mobile-more-sheet" aria-label="More site sections">
+          <a href="#cafe" onClick={() => setIsMobileMenuOpen(false)}>Café</a>
           <a href="#tour" onClick={() => setIsMobileMenuOpen(false)}>Apartment Tour</a>
           <a href="#amenities" onClick={() => setIsMobileMenuOpen(false)}>Amenities</a>
           <a href="#nearby" onClick={() => setIsMobileMenuOpen(false)}>Nearby</a>
@@ -1165,17 +1166,20 @@ export default function Home() {
           <BedDouble size={20} />
           <span>Rooms</span>
         </a>
-        <a
-          href="#cafe"
-          className={`mobile-tab-item ${activeMobileTabKey === "cafe" ? "is-active" : ""}`}
+        <button
+          type="button"
+          className="mobile-tab-item mobile-tab-chat-button"
+          aria-label="Open chat"
           onClick={() => {
-            setActiveMobileTab("cafe");
             setIsMobileMenuOpen(false);
+            window.dispatchEvent(new Event("jikmis:open-chat"));
           }}
         >
-          <Coffee size={20} />
-          <span>Café</span>
-        </a>
+          <span className="mobile-tab-chat-icon">
+            <Bot size={20} />
+          </span>
+          <span>Chat</span>
+        </button>
         <a
           href="#contact"
           className={`mobile-tab-item ${activeMobileTabKey === "contact" ? "is-active" : ""}`}
