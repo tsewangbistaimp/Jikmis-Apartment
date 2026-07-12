@@ -73,7 +73,7 @@ House rules and policies:
 * Safety: guests should report maintenance or security issues immediately
 
 Booking and payment:
-* To make a booking inquiry, collect room type, check-in date, check-out date, number of guests, full name, phone number, ID/citizenship/passport, and payment method.
+* To make a booking inquiry, collect room type, check-in date, check-out date, number of guests, full name, phone number, email address, ID/citizenship/passport, and payment method.
 * After details are collected, show a clean booking inquiry summary.
 * 50% advance payment is required to confirm booking.
 * Remaining 50% must be paid within 2 days of check-in.
@@ -82,7 +82,7 @@ Booking and payment:
 * Never accept payment inside chat.
 * After successful payment, ask guests to send the payment screenshot on WhatsApp.
 * Viewing/inspection is allowed if the room is available.
-* Automatic email notification is not set up yet. If asked, say the team can be contacted by WhatsApp, call, or email.
+* Once a guest shares both their email address and phone number in the chat, the website automatically emails the full conversation to the team and opens WhatsApp with the details, so actively ask for email and phone number as part of collecting booking details.
 
 Receptionist rules:
 * Speak in a friendly, casual, warm family-run apartment style.
@@ -103,7 +103,7 @@ Receptionist rules:
 
 const CONTACT_LINE = "Please WhatsApp or call 9708538395 / 9869035191, or email jikmisdonkhang@gmail.com.";
 const BOOKING_DETAILS_PROMPT =
-  "For booking, please share room type, check-in date, check-out date, number of guests, full name, phone number, ID/citizenship/passport, and payment method.";
+  "For booking, please share room type, check-in date, check-out date, number of guests, full name, phone number, and email address (this lets us confirm your request by WhatsApp and email automatically), plus ID/citizenship/passport and payment method.";
 
 type ChatMessage = {
   role: "user" | "assistant";

@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Bot, Mail, MessageCircle, Phone, Send, X } from "lucide-react";
+import { FORMSPREE_ENDPOINT, INQUIRY_EMAIL, WHATSAPP_NUMBER } from "@/lib/site";
 
 type ChatMessage = {
   id: string;
@@ -22,6 +23,22 @@ const starterMessages: ChatMessage[] = [
 
 const chatEndpoint = process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/chat` : "/api/chat";
 const helperNoteStorageKey = "jikmis-chat-helper-note-dismissed";
+const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+const PHONE_REGEX = /(?:\+?977[-\s]?)?9\d{9}|\+?\d[\d\-\s]{7,14}\d/;
+const URL_REGEX = /(https?:\/\/[^\s]+)/g;
+
+function renderMessageContent(content: string) {
+  const parts = content.split(URL_REGEX);
+  return parts.map((part, index) =>
+    /^https?:\/\//.test(part) ? (
+      <a key={index} href={part} target="_blank" rel="noreferrer">
+        {part}
+      </a>
+    ) : (
+      <span key={index}>{part}</span>
+    )
+  );
+}
 
 export default function ApartmentChatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,6 +49,7 @@ export default function ApartmentChatbot() {
   const historyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const messageIdRef = useRef(0);
+  const hasSentBookingInfoRef = useRef(false);
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
@@ -55,6 +73,25 @@ export default function ApartmentChatbot() {
     setIsHelperNoteHidden(true);
   }
 
+  async function fetchBotReply(trimmed: string, chatHistory: { role: string; content: string }[]): Promise<string> {
+    try {
+      const response = await fetch(chatEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: trimmed, messages: chatHistory })
+      });
+
+      if (!response.ok) {
+        throw new Error("Chat request failed");
+      }
+
+      const data = (await response.json()) as { reply?: string };
+      return data.reply || "Please contact us on WhatsApp or call 9708538395 / 9869035191 for the fastest booking help.";
+    } catch {
+      return "Sorry, I cannot connect right now. Please WhatsApp or call 9708538395 / 9869035191 for room inquiries.";
+    }
+  }
+
   async function sendMessage(text: string) {
     const trimmed = text.trim();
     if (!trimmed || isTyping) return;
@@ -70,49 +107,76 @@ export default function ApartmentChatbot() {
     setInput("");
     setIsTyping(true);
 
-    try {
-      const chatHistory = [...messages, userMessage]
-        .filter((message) => message.id !== "welcome")
-        .slice(-8)
-        .map((message) => ({
-          role: message.role === "bot" ? "assistant" : "user",
-          content: message.content
-        }));
+    const chatHistory = [...messages, userMessage]
+      .filter((message) => message.id !== "welcome")
+      .slice(-8)
+      .map((message) => ({
+        role: message.role === "bot" ? "assistant" : "user",
+        content: message.content
+      }));
 
-      const response = await fetch(chatEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed, messages: chatHistory })
-      });
+    const botReplyContent = await fetchBotReply(trimmed, chatHistory);
 
-      if (!response.ok) {
-        throw new Error("Chat request failed");
+    setMessages((current) => [
+      ...current,
+      {
+        id: `bot-${messageIdRef.current}`,
+        role: "bot",
+        content: botReplyContent
       }
+    ]);
+    setIsTyping(false);
 
-      const data = (await response.json()) as { reply?: string };
-      setMessages((current) => [
-        ...current,
-        {
-          id: `bot-${messageIdRef.current}`,
-          role: "bot",
-          content:
-            data.reply ||
-            "Please contact us on WhatsApp or call 9708538395 / 9869035191 for the fastest booking help."
-        }
-      ]);
-    } catch {
-      setMessages((current) => [
-        ...current,
-        {
-          id: `bot-${messageIdRef.current}`,
-          role: "bot",
-            content:
-              "Sorry, I cannot connect right now. Please WhatsApp or call 9708538395 / 9869035191 for room inquiries."
-        }
-      ]);
-    } finally {
-      setIsTyping(false);
+    if (!hasSentBookingInfoRef.current) {
+      const transcript = [...messages, userMessage, { id: "pending-bot", role: "bot" as const, content: botReplyContent }]
+        .map((entry) => `${entry.role === "user" ? "Guest" : "JK Assistant"}: ${entry.content}`)
+        .join("\n");
+      const emailMatch = transcript.match(EMAIL_REGEX);
+      const phoneMatch = transcript.match(PHONE_REGEX);
+
+      if (emailMatch && phoneMatch) {
+        hasSentBookingInfoRef.current = true;
+        void sendBookingInfoFromChat(transcript, emailMatch[0], phoneMatch[0].replace(/[\s-]/g, ""));
+      }
     }
+  }
+
+  async function sendBookingInfoFromChat(transcript: string, email: string, phone: string) {
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+      `New chat booking inquiry from the Jikmis Apartment website.\nGuest email: ${email}\nGuest phone: ${phone}\n\nConversation:\n${transcript}`
+    )}`;
+
+    let emailSent = true;
+    try {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { Accept: "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({
+          _subject: "New Jikmis Apartment chat booking inquiry",
+          email,
+          phone,
+          transcript,
+          _replyto: email
+        })
+      });
+      emailSent = response.ok;
+    } catch {
+      emailSent = false;
+    }
+
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+
+    messageIdRef.current += 1;
+    setMessages((current) => [
+      ...current,
+      {
+        id: `bot-info-${messageIdRef.current}`,
+        role: "bot",
+        content: emailSent
+          ? `Thanks! I've sent your details to our team (${INQUIRY_EMAIL}) and opened WhatsApp so we can confirm your booking quickly. If WhatsApp didn't open, tap here: ${whatsappUrl}`
+          : `Thanks! I've opened WhatsApp so our team can confirm your booking. If it didn't open, tap here: ${whatsappUrl}`
+      }
+    ]);
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -165,7 +229,7 @@ export default function ApartmentChatbot() {
           <div className="chatbot-history" ref={historyRef}>
             {messages.map((message) => (
               <div className={`chat-message ${message.role}`} key={message.id}>
-                {message.content}
+                {renderMessageContent(message.content)}
               </div>
             ))}
             {isTyping && (
@@ -186,13 +250,13 @@ export default function ApartmentChatbot() {
           </div>
 
           <div className="chat-actions">
-            <a href="https://wa.me/9779708538395" target="_blank" rel="noreferrer">
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer">
               <MessageCircle size={16} /> WhatsApp
             </a>
-            <a href="tel:+9779708538395">
+            <a href={`tel:+${WHATSAPP_NUMBER}`}>
               <Phone size={16} /> Call
             </a>
-            <a href="mailto:jikmisdonkhang@gmail.com">
+            <a href={`mailto:${INQUIRY_EMAIL}`}>
               <Mail size={16} /> Email
             </a>
           </div>

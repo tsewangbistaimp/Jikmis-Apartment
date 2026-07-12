@@ -6,6 +6,7 @@ import {
   Bath,
   BedDouble,
   Building2,
+  Camera,
   Car,
   Check,
   ChefHat,
@@ -15,7 +16,9 @@ import {
   Coffee,
   Heart,
   HeartHandshake,
+  Image as ImageIcon,
   MapPin,
+  Menu,
   MessageCircle,
   Phone,
   Plane,
@@ -29,6 +32,7 @@ import {
   X
 } from "lucide-react";
 import ApartmentChatbot from "@/components/ApartmentChatbot";
+import { calculateNights, FORMSPREE_ENDPOINT, INQUIRY_EMAIL, WHATSAPP_NUMBER } from "@/lib/site";
 
 const roomShowcase = [
   {
@@ -176,16 +180,6 @@ const cafeMenu = [
   { category: "Bakery", items: ["Butter Croissant", "Cheesecake", "Chocolate Cake", "Brownie", "Fresh Bakery Items"] }
 ];
 
-const WHATSAPP_NUMBER = "9779708538395";
-const INQUIRY_EMAIL = "jikmisdonkhang@gmail.com";
-const FORMSPREE_ENDPOINT = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || "https://formspree.io/f/xvzepwkw";
-
-function calculateNights(checkIn: string, checkOut: string) {
-  if (!checkIn || !checkOut) return 0;
-  const nights = Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000);
-  return Number.isFinite(nights) && nights > 0 ? nights : 0;
-}
-
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activePhoto, setActivePhoto] = useState(0);
@@ -200,6 +194,8 @@ export default function Home() {
   const [bookingMessage, setBookingMessage] = useState("");
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [contactDetails, setContactDetails] = useState({ name: "", email: "", phone: "" });
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [lightbox, setLightbox] = useState<{ images: string[]; title: string; index: number } | null>(null);
 
   useEffect(() => {
     const updateScrollState = () => setIsScrolled(window.scrollY > 24);
@@ -309,6 +305,47 @@ export default function Home() {
     };
   }, [isBookingModalOpen]);
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsMobileMenuOpen(false);
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (!lightbox) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setLightbox(null);
+      } else if (event.key === "ArrowRight") {
+        setLightbox((current) => (current ? { ...current, index: (current.index + 1) % current.images.length } : current));
+      } else if (event.key === "ArrowLeft") {
+        setLightbox((current) =>
+          current ? { ...current, index: (current.index - 1 + current.images.length) % current.images.length } : current
+        );
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [lightbox]);
+
   const heroImage = useMemo(() => roomShowcase[2].images[activePhoto % roomShowcase[2].images.length], [activePhoto]);
   const nightsPreview = calculateNights(bookingForm.checkIn, bookingForm.checkOut);
 
@@ -364,11 +401,11 @@ export default function Home() {
   return (
     <main className="apartment-site luxury-site">
       <header className={`site-header luxury-nav ${isScrolled ? "is-scrolled" : ""}`}>
-        <Link className="brand" href="/">
+        <Link className="brand" href="/" onClick={() => setIsMobileMenuOpen(false)}>
           <span className="brand-mark">JK</span>
           <span>Jikmis Apartment</span>
         </Link>
-        <nav aria-label="Main navigation">
+        <nav aria-label="Main navigation" className="desktop-nav">
           <a href="#about">About</a>
           <a href="#rooms">Rooms</a>
           <a href="#cafe">Café</a>
@@ -377,9 +414,42 @@ export default function Home() {
           <a href="#gallery">Gallery</a>
           <a href="#contact">Contact</a>
         </nav>
-        <button type="button" className="nav-book-button" onClick={() => setIsBookingModalOpen(true)}>
-          <Send size={15} /> Book Now
-        </button>
+        <div className="header-actions">
+          <button type="button" className="nav-book-button" onClick={() => setIsBookingModalOpen(true)}>
+            <Send size={15} /> <span>Book Now</span>
+          </button>
+          <button
+            type="button"
+            className="mobile-menu-toggle"
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMobileMenuOpen}
+            onClick={() => setIsMobileMenuOpen((open) => !open)}
+          >
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+
+        {isMobileMenuOpen ? (
+          <nav className="mobile-nav-panel" aria-label="Mobile navigation">
+            <a href="#about" onClick={() => setIsMobileMenuOpen(false)}>About</a>
+            <a href="#rooms" onClick={() => setIsMobileMenuOpen(false)}>Rooms</a>
+            <a href="#cafe" onClick={() => setIsMobileMenuOpen(false)}>Café</a>
+            <a href="#amenities" onClick={() => setIsMobileMenuOpen(false)}>Amenities</a>
+            <a href="#nearby" onClick={() => setIsMobileMenuOpen(false)}>Nearby</a>
+            <a href="#gallery" onClick={() => setIsMobileMenuOpen(false)}>Gallery</a>
+            <a href="#contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
+            <button
+              type="button"
+              className="button primary mobile-nav-book"
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                setIsBookingModalOpen(true);
+              }}
+            >
+              <Send size={16} /> Book Now
+            </button>
+          </nav>
+        ) : null}
       </header>
 
       <section className="luxury-hero airbnb-hero">
@@ -513,10 +583,18 @@ export default function Home() {
             const image = room.images[activePhoto % room.images.length];
             return (
               <article className="luxury-room-card" key={room.title}>
-                <div className="room-image-frame">
+                <button
+                  type="button"
+                  className="room-image-frame"
+                  onClick={() => setLightbox({ images: room.images, title: room.title, index: 0 })}
+                  aria-label={`View all ${room.images.length} photos of ${room.title}`}
+                >
                   <img src={image} alt={`${room.title} at Jikmis Apartment`} />
                   <span className="room-chip">{room.guests}</span>
-                </div>
+                  <span className="photo-count-badge">
+                    <Camera size={14} /> {room.images.length}
+                  </span>
+                </button>
                 <div className="luxury-room-body">
                   <div className="room-title-row">
                     <h3>{room.title}</h3>
@@ -543,14 +621,32 @@ export default function Home() {
       <section className="section-shell cafe-section" id="cafe">
         <div className="cafe-grid">
           <div className="cafe-media">
-            <div className="cafe-main-frame">
+            <button
+              type="button"
+              className="cafe-main-frame"
+              onClick={() =>
+                setLightbox({ images: cafeImages.map((image) => image.src), title: "Jikmis Café", index: 0 })
+              }
+              aria-label={`View all ${cafeImages.length} Jikmis Café photos`}
+            >
               <img src={cafeImages[0].src} alt={cafeImages[0].alt} loading="lazy" />
-            </div>
+              <span className="photo-count-badge">
+                <Camera size={14} /> {cafeImages.length}
+              </span>
+            </button>
             <div className="cafe-photo-strip" aria-label="Jikmis Café photo preview">
-              {cafeImages.slice(1).map((image) => (
-                <div className="cafe-thumb" key={image.src}>
+              {cafeImages.slice(1).map((image, index) => (
+                <button
+                  type="button"
+                  className="cafe-thumb"
+                  key={image.src}
+                  onClick={() =>
+                    setLightbox({ images: cafeImages.map((item) => item.src), title: "Jikmis Café", index: index + 1 })
+                  }
+                  aria-label={`View Jikmis Café photo ${index + 2} of ${cafeImages.length}`}
+                >
                   <img src={image.src} alt={image.alt} loading="lazy" />
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -650,9 +746,30 @@ export default function Home() {
           <h2>Real rooms, real warmth.</h2>
         </div>
         <div className="luxury-gallery">
-          {galleryImages.map((image, index) => (
-            <img key={image} src={image} alt={`Jikmis Apartment gallery image ${index + 1}`} />
-          ))}
+          {galleryImages.slice(0, 6).map((image, index) => {
+            const isLastTile = index === 5;
+            const remaining = galleryImages.length - 6;
+            return (
+              <button
+                type="button"
+                className="gallery-tile"
+                key={image}
+                onClick={() => setLightbox({ images: galleryImages, title: "Jikmis Apartment Gallery", index })}
+                aria-label={
+                  isLastTile && remaining > 0
+                    ? `View all ${galleryImages.length} gallery photos`
+                    : `View gallery photo ${index + 1}`
+                }
+              >
+                <img src={image} alt={`Jikmis Apartment gallery image ${index + 1}`} />
+                {isLastTile && remaining > 0 ? (
+                  <span className="gallery-more-overlay">
+                    <ImageIcon size={20} /> +{remaining} Photos
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
         </div>
       </section>
 
@@ -938,6 +1055,63 @@ export default function Home() {
                 </p>
               ) : null}
             </form>
+          </div>
+        </div>
+      )}
+
+      {lightbox && (
+        <div className="lightbox-backdrop" role="presentation" onClick={() => setLightbox(null)}>
+          <div
+            className="lightbox-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${lightbox.title} photos`}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="lightbox-header">
+              <span>
+                {lightbox.title} — {lightbox.index + 1} / {lightbox.images.length}
+              </span>
+              <button className="lightbox-close" type="button" aria-label="Close photo viewer" onClick={() => setLightbox(null)}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className="lightbox-stage">
+              <button
+                type="button"
+                className="lightbox-nav lightbox-prev"
+                aria-label="Previous photo"
+                onClick={() =>
+                  setLightbox((current) =>
+                    current ? { ...current, index: (current.index - 1 + current.images.length) % current.images.length } : current
+                  )
+                }
+              >
+                <ChevronLeft size={22} />
+              </button>
+              <img src={lightbox.images[lightbox.index]} alt={`${lightbox.title} photo ${lightbox.index + 1}`} />
+              <button
+                type="button"
+                className="lightbox-nav lightbox-next"
+                aria-label="Next photo"
+                onClick={() => setLightbox((current) => (current ? { ...current, index: (current.index + 1) % current.images.length } : current))}
+              >
+                <ChevronRight size={22} />
+              </button>
+            </div>
+            <div className="lightbox-thumbs">
+              {lightbox.images.map((image, index) => (
+                <button
+                  type="button"
+                  key={image}
+                  className={`lightbox-thumb ${index === lightbox.index ? "is-active" : ""}`}
+                  onClick={() => setLightbox((current) => (current ? { ...current, index } : current))}
+                  aria-label={`Go to photo ${index + 1}`}
+                >
+                  <img src={image} alt="" />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
