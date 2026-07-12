@@ -2263,7 +2263,7 @@ textarea { resize: vertical; }
   }
   .video-showcase-grid::-webkit-scrollbar { display: none; }
   .video-card {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 9 / 16;
     flex: 0 0 82vw;
     height: auto;
     scroll-snap-align: start;
