@@ -34,6 +34,24 @@ import {
 import ApartmentChatbot from "@/components/ApartmentChatbot";
 import { calculateNights, FORMSPREE_ENDPOINT, INQUIRY_EMAIL, WHATSAPP_NUMBER } from "@/lib/site";
 
+const apartmentVideos = [
+  {
+    src: "/videos/jikmis-apartment-tour-1.mp4",
+    poster: "/images/jikmis/single-studio-bedroom.jpeg",
+    title: "Studio Living"
+  },
+  {
+    src: "/videos/jikmis-apartment-tour-2.mp4",
+    poster: "/images/jikmis/double-studio-lounge.jpeg",
+    title: "Double Studio"
+  },
+  {
+    src: "/videos/jikmis-apartment-tour-3.mp4",
+    poster: "/images/jikmis/family-room-living.jpeg",
+    title: "Family Room"
+  }
+];
+
 const roomShowcase = [
   {
     title: "Single Studio",
@@ -618,6 +636,29 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="section-shell video-showcase" id="tour">
+        <div className="section-heading centered-heading">
+          <p className="eyebrow">Apartment Tour</p>
+          <h2>Step inside Jikmis Apartment.</h2>
+        </div>
+        <div className="video-showcase-grid">
+          {apartmentVideos.map((video) => (
+            <div className="video-card" key={video.src}>
+              <video
+                src={video.src}
+                poster={video.poster}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+              />
+              <span className="video-card-caption">{video.title}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="section-shell cafe-section" id="cafe">
         <div className="cafe-grid">
           <div className="cafe-media">
@@ -876,7 +917,7 @@ export default function Home() {
             </label>
           </div>
           <button className="button primary" type="submit" disabled={bookingStatus === "sending"}>
-            <Send size={18} /> {bookingStatus === "sending" ? "Sending..." : "Send to WhatsApp & Email"}
+            <Send size={18} /> {bookingStatus === "sending" ? "Booking..." : "Book Now"}
           </button>
           {bookingMessage ? (
             <p className={`message ${bookingStatus === "error" ? "error" : "success"}`} role="status">
@@ -1047,7 +1088,7 @@ export default function Home() {
                 />
               </label>
               <button className="button primary" type="submit" disabled={bookingStatus === "sending"}>
-                <Send size={18} /> {bookingStatus === "sending" ? "Sending..." : "Send to WhatsApp & Email"}
+                <Send size={18} /> {bookingStatus === "sending" ? "Booking..." : "Book Now"}
               </button>
               {bookingMessage ? (
                 <p className={`message ${bookingStatus === "error" ? "error" : "success"}`} role="status">

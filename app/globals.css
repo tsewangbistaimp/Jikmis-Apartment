@@ -324,7 +324,40 @@ textarea { resize: vertical; }
   animation: fadeUp 680ms ease both;
   border-top: 3px solid var(--accent);
   display: grid;
-  gap: 14px;
+  gap: 16px;
+  padding: clamp(22px, 3vw, 30px);
+}
+
+.booking-panel label {
+  color: var(--muted);
+  display: grid;
+  font-size: 0.76rem;
+  font-weight: 800;
+  gap: 7px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.booking-panel select,
+.booking-panel input {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: inset 0 1px 2px rgba(33, 29, 23, 0.04);
+  color: var(--ink);
+  font-size: 0.98rem;
+  font-weight: 600;
+  min-height: 46px;
+  padding: 11px 14px;
+  text-transform: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.booking-panel select:focus,
+.booking-panel input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201, 102, 60, 0.16);
+  outline: none;
 }
 
 .booking-panel-title {
@@ -1296,6 +1329,40 @@ textarea { resize: vertical; }
   color: var(--brown);
 }
 
+.video-showcase-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.video-card {
+  animation: fadeUp 680ms ease both;
+  aspect-ratio: 9 / 14;
+  border-radius: 20px;
+  box-shadow: 0 26px 64px rgba(20, 12, 6, 0.22);
+  overflow: hidden;
+  position: relative;
+}
+
+.video-card video {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.video-card-caption {
+  background: linear-gradient(0deg, rgba(16, 10, 5, 0.72), rgba(16, 10, 5, 0));
+  bottom: 0;
+  color: white;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  left: 0;
+  padding: 34px 18px 18px;
+  position: absolute;
+  right: 0;
+}
+
 .cafe-section {
   position: relative;
 }
@@ -1772,6 +1839,7 @@ textarea { resize: vertical; }
   .contact-section { grid-template-columns: 1fr; }
   .contact-actions { justify-content: flex-start; }
   .cafe-grid { grid-template-columns: 1fr; }
+  .video-showcase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cafe-photo-strip { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .cafe-menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .luxury-room-grid, .review-grid { grid-template-columns: 1fr; }
@@ -1915,6 +1983,8 @@ textarea { resize: vertical; }
   .section-shell { padding: 40px 16px; }
   .luxury-about { padding-top: 48px; }
   .nearby-grid, .luxury-gallery { grid-template-columns: 1fr; }
+  .video-showcase-grid { grid-template-columns: 1fr; }
+  .video-card { aspect-ratio: 16 / 10; }
   .luxury-gallery .gallery-tile:nth-child(1), .luxury-gallery .gallery-tile:nth-child(6) { grid-column: span 1; aspect-ratio: 1 / 1; }
   .cafe-main-frame { aspect-ratio: 4 / 3.2; }
   .cafe-photo-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
